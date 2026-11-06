@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Alex Hayes – Học AI từ số 0, làm công khai</title>
+<meta name="description" content="Alex Hayes học AI từ con số 0, làm công khai và kể lại từng bước trên YouTube: bản tin AI tự động, dọn file Excel lỗi, và những cảm nhận về AI như một trợ lý đắc lực.">
+<style>
+:root{
+  --bg:#0d0e11; --panel:#14161a; --line:rgba(201,169,106,.22); --line-soft:rgba(236,232,223,.10);
+  --text:#ece8df; --muted:#a39e92; --gold:#c9a96a; --gold-hi:#e6d3a8;
+  --serif:"Palatino Linotype",Palatino,Cambria,"Times New Roman",serif;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);font-weight:300;font-size:1.0625rem;line-height:1.75;overflow-x:hidden;
+  background-image:radial-gradient(ellipse at 90% -5%,rgba(201,169,106,.10),transparent 45%)}
+a{color:inherit}
+.wrap{max-width:60rem;margin:0 auto;padding:0 1.25rem 3rem 3rem;position:relative}
+.wrap::before{content:"";position:absolute;left:1.35rem;top:0;bottom:0;width:1px;background:linear-gradient(to bottom,transparent,var(--gold) 6%,var(--gold) 94%,transparent);opacity:.4}
+.stage{position:relative;padding:3.5rem 0 1.2rem}
+.stage::before{content:"";position:absolute;left:-1.95rem;top:4.05rem;width:.6rem;height:.6rem;border-radius:50%;background:var(--gold);box-shadow:0 0 0 5px var(--bg),0 0 0 6px var(--line)}
+.tag{font-size:.74rem;font-weight:500;letter-spacing:.24em;text-transform:uppercase;color:var(--gold);margin:0 0 1rem}
+h1,h2{font-family:var(--serif);font-weight:400;line-height:1.14;letter-spacing:-.005em;margin:0 0 1.3rem;text-wrap:balance;overflow-wrap:break-word}
+h1{font-size:clamp(2.1rem,8.6vw,4.2rem)}
+h2{font-size:clamp(1.8rem,7vw,3rem)}
+h1 em,h2 em{font-style:italic;color:var(--gold-hi)}
+p{margin:0 0 1.1rem;max-width:40rem;color:#d9d5cb}
+.hero{padding-top:2.8rem}
+.hero::before{top:3.3rem}
+.hero-grid{display:grid;gap:2rem}
+.name{font-family:var(--serif);font-size:1.15rem;letter-spacing:.04em;color:var(--text);margin:0 0 .15rem}
+.small{color:var(--muted);font-size:.95rem;letter-spacing:.04em;margin:0 0 1.6rem}
+.photo{position:relative;width:min(14rem,68%);aspect-ratio:1;margin:.4rem 0 .6rem .5rem}
+.photo::before{content:"";position:absolute;inset:-.7rem;border-radius:50%;border:1px solid var(--line)}
+.photo img{position:relative;display:block;width:100%;height:100%;border-radius:50%;object-fit:cover;object-position:50% 30%;border:1px solid var(--gold);background:var(--panel)}
+.btn{display:inline-block;background:linear-gradient(180deg,#d7bb7f,#c0a063);color:#17130a;font-weight:500;font-size:.82rem;letter-spacing:.2em;text-transform:uppercase;text-decoration:none;padding:1rem 1.8rem;border-radius:2px;border:1px solid #d7bb7f;transition:background .3s,color .3s,border-color .3s}
+.btn:hover,.btn:focus-visible{background:transparent;color:var(--gold-hi);border-color:var(--gold)}
+.btn:focus-visible,a:focus-visible{outline:2px solid var(--gold-hi);outline-offset:4px}
+.cards{display:grid;gap:1.1rem;margin:1.6rem 0}
+.card{background:var(--panel);border:1px solid var(--line-soft);border-top:1px solid var(--gold);padding:1.6rem 1.4rem 1.3rem}
+.card .id{display:block;font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin-bottom:.7rem}
+.card h3{font-family:var(--serif);font-weight:400;font-size:1.4rem;line-height:1.25;margin:0 0 .8rem}
+.card p{margin:0;color:#cfcbc1}
+.note{font-size:.92rem;color:var(--muted);border-top:1px solid var(--line-soft);padding-top:.9rem;max-width:40rem;font-style:italic}
+.badge{background:linear-gradient(135deg,rgba(201,169,106,.10),transparent 70%);border:1px solid var(--gold);padding:1.5rem 1.4rem;margin:1.4rem 0}
+.badge span{display:block;font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin-bottom:.5rem}
+.badge strong{display:block;font-family:var(--serif);font-weight:400;font-size:1.45rem;line-height:1.3}
+.chips{list-style:none;padding:0;margin:1.2rem 0;display:flex;flex-wrap:wrap;gap:.55rem}
+.chips li{font-size:.84rem;letter-spacing:.06em;border:1px solid var(--line);color:var(--gold-hi);padding:.3rem .9rem;border-radius:99px}
+.list{list-style:none;padding:0;margin:1.2rem 0;max-width:40rem}
+.list li{position:relative;padding:.85rem 0 .85rem 1.8rem;border-bottom:1px solid var(--line-soft);color:#d9d5cb}
+.list li::before{content:"";position:absolute;left:.2rem;top:1.55rem;width:.5rem;height:1px;background:var(--gold)}
+.ideas{list-style:none;padding:0;margin:1.4rem 0;max-width:42rem;counter-reset:i}
+.ideas li{counter-increment:i;position:relative;padding:1.3rem 0 1.3rem 3.2rem;border-top:1px solid var(--line-soft)}
+.ideas li:last-child{border-bottom:1px solid var(--line-soft)}
+.ideas li::before{content:counter(i,lower-roman);position:absolute;left:0;top:1.25rem;font-family:var(--serif);font-style:italic;font-size:1.5rem;color:var(--gold);width:2.4rem}
+.ideas h3{font-family:var(--serif);font-weight:400;font-size:1.3rem;line-height:1.3;margin:0 0 .45rem;color:var(--text)}
+.ideas p{margin:0;color:#cfcbc1}
+.quote{margin:2.2rem 0 1rem;padding:.4rem 0 .4rem 1.4rem;border-left:1px solid var(--gold);max-width:40rem}
+.quote small{display:block;font-size:.72rem;letter-spacing:.24em;text-transform:uppercase;color:var(--gold);margin-bottom:.8rem}
+.quote p{font-family:var(--serif);font-style:italic;font-size:clamp(1.3rem,5vw,1.9rem);line-height:1.4;color:var(--gold-hi);margin:0}
+.end{padding-bottom:2rem}
+footer{color:var(--muted);font-size:.85rem;letter-spacing:.12em;padding:1.6rem 0 0;border-top:1px solid var(--line-soft);margin-top:2.4rem}
+.reveal{opacity:0;transform:translateY(14px);transition:opacity 1s ease,transform 1s ease}
+.reveal.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .reveal{opacity:1;transform:none;transition:none}
+  .btn{transition:none}
+}
+@media (min-width:48rem){
+  body{font-size:1.125rem}
+  .wrap{padding:0 2rem 4rem 5rem}
+  .wrap::before{left:2.3rem}
+  .stage::before{left:-2.85rem}
+  .hero-grid{grid-template-columns:1fr 15rem;align-items:center;gap:3rem}
+  .photo{width:15rem;margin:0}
+  .cards{grid-template-columns:1fr 1fr}
+  .stage{padding-top:5.5rem}
+  .stage::before{top:6.05rem}
+  .hero::before{top:3.3rem}
+}
+</style>
+</head>
+<body>
+<main class="wrap">
+
+<section class="stage hero" id="chang-0">
+  <div class="hero-grid">
+    <div>
+      <p class="tag">Chặng 0 · Xuất phát</p>
+      <p class="name">Alex Hayes</p>
+      <p class="small">Đang học và làm với AI, công khai</p>
+      <h1>Tôi học AI từ con số 0, làm công khai và kể lại <em>từng bước</em>.</h1>
+      <p>Tôi là người làm kinh doanh thật, đang học dùng AI để làm việc nhanh và thông minh hơn. Mọi thứ tôi học và thử, tôi chia sẻ trên YouTube.</p>
+      <p><a class="btn" href="https://www.youtube.com/@Vannam_alexhayes" target="_blank" rel="noopener">Đăng ký kênh YouTube</a></p>
+    </div>
+    <div class="photo"><img src="anh/alex.avif" alt="Ảnh chân dung Alex Hayes" width="960" height="960"></div>
+  </div>
+</section>
+
+<section class="stage reveal" id="chang-1">
+  <p class="tag">Chặng 1 · Lý do</p>
+  <h2>Vì sao tôi học <em>AI</em> công khai</h2>
+  <p>Tôi dùng AI từ năm 2023. Càng dùng, tôi càng thấy AI có thể giúp rất nhiều người đi làm: làm việc nhanh hơn, bớt việc lặp lại, xử lý dữ liệu gọn hơn.</p>
+  <p>Nhưng tôi không muốn chỉ nói. Tôi muốn chứng minh: một người bình thường, bắt đầu từ số 0, có thể học AI và dùng nó trong kinh doanh đến mức nào trong một khoảng thời gian.</p>
+  <p>Vì vậy tôi học công khai. Kênh YouTube của tôi còn rất mới và hiện chủ yếu là livestream. Bạn có thể xem tôi học, thử, sai và sửa ngay trên kênh, rồi đi cùng tôi từng bước.</p>
+</section>
+
+<section class="stage reveal" id="chang-2">
+  <p class="tag">Chặng 2 · Kết quả</p>
+  <h2>Tôi đã làm được <em>gì</em></h2>
+  <div class="cards">
+    <article class="card">
+      <span class="id">Việc thứ nhất</span>
+      <h3>Bản tin AI tự đến mỗi sáng</h3>
+      <p>Mỗi sáng tôi nhận các bài báo chính về AI kèm phần phân tích: điều gì có lợi, điều gì bất lợi, điều gì hữu ích cho tôi. Làm tay mất khoảng 1 giờ mỗi ngày, giờ máy tự chạy. Nói thật: máy tính phải đang bật thì nó mới chạy. (Thời gian là ước lượng của tôi.)</p>
+    </article>
+    <article class="card">
+      <span class="id">Việc thứ hai</span>
+      <h3>Dọn file Excel lỗi trong khoảng 5 phút</h3>
+      <p>File xuất từ phần mềm thường đầy dòng thừa, ngày viết dạng chữ. Với Claude Code, tôi dọn sạch trong khoảng 5 phút; làm tay thường mất khoảng 1 giờ. (Ước lượng của tôi, chưa đo chính xác.)</p>
+    </article>
+  </div>
+  <p class="note">Tôi mới ở mức cơ bản với Claude Code và đang tiến lên từng ngày.</p>
+</section>
+
+<section class="stage reveal" id="chang-3">
+  <p class="tag">Chặng 3 · Bằng chứng</p>
+  <h2>Kỹ năng và <em>bằng chứng</em></h2>
+  <div class="badge"><span>Huy hiệu số · IBM SkillsBuild</span><strong>Getting Started with Generative AI</strong></div>
+  <ul class="chips">
+    <li>AI Ethics</li><li>Analytical Skills</li><li>Generative AI</li><li>Problem Solving</li><li>Risk Control</li>
+  </ul>
+  <p class="note">Đây là huy hiệu đầu tiên của tôi. Tôi sẽ thêm khi học tiếp.</p>
+</section>
+
+<section class="stage reveal" id="chang-4">
+  <p class="tag">Chặng 4 · Cảm nhận</p>
+  <h2>Điều tôi cảm nhận về <em>AI</em></h2>
+  <p>Tôi từng làm nhiều việc: nhập khẩu, bán hàng, quản lý đội ngũ. Khi đưa AI vào những việc quen thuộc đó, tôi nhận ra vài điều. Đây là cảm nhận cá nhân qua trải nghiệm của tôi.</p>
+  <ol class="ideas">
+    <li>
+      <h3>Một trợ lý đắc lực</h3>
+      <p>Với người từng làm những công việc này, AI giống một trợ lý rất đắc lực: dọn dữ liệu, tổng hợp tin tức, hỗ trợ cả khâu bán hàng.</p>
+    </li>
+    <li>
+      <h3>Bớt rất nhiều thời gian</h3>
+      <p>Những việc từng ngốn khoảng một giờ, giờ chỉ còn vài phút. Đó là ước lượng của tôi, nhưng khác biệt đủ để tôi thấy rõ.</p>
+    </li>
+    <li>
+      <h3>Cả phần phân tích và nghiên cứu</h3>
+      <p>Ở những phần cần phân tích hay nghiên cứu, có khi AI còn làm tốt hơn tôi.</p>
+    </li>
+  </ol>
+  <blockquote class="quote">
+    <small>Bài học của tôi</small>
+    <p>Về độ thông minh, tôi không thể bằng AI. Vì vậy, điều tôi chọn là trở thành người dùng AI tốt hơn.</p>
+  </blockquote>
+</section>
+
+<section class="stage reveal" id="chang-5">
+  <p class="tag">Chặng 5 · Phía trước</p>
+  <h2>Bạn sẽ nhận được <em>gì</em></h2>
+  <p>Kênh của tôi đang đi theo hướng này:</p>
+  <ul class="list">
+    <li>Cách dùng AI cho công việc hằng ngày, dễ hiểu, không thiên về kỹ thuật</li>
+    <li>Tự động hoá những việc lặp đi lặp lại</li>
+    <li>Làm việc với dữ liệu, hồ sơ, file Excel nhanh hơn</li>
+    <li>Kể thật hành trình học: cả cái làm được lẫn cái chưa làm được</li>
+  </ul>
+  <p class="note">Đây là kế hoạch. Kênh còn mới và tôi sẽ làm dần.</p>
+</section>
+
+<section class="stage end reveal" id="chang-6">
+  <p class="tag">Chặng 6 · Đi tiếp</p>
+  <h2>Đi cùng tôi <em>nhé</em></h2>
+  <p>Tôi đang học và làm công khai. Trang này sẽ cập nhật dần.</p>
+  <p><a class="btn" href="https://www.youtube.com/@Vannam_alexhayes" target="_blank" rel="noopener">Đăng ký kênh YouTube</a></p>
+  <footer>© Alex Hayes</footer>
+</section>
+
+</main>
+<script>
+(function(){
+  var items = document.querySelectorAll('.reveal');
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduce || !('IntersectionObserver' in window)) {
+    items.forEach(function(e){ e.classList.add('in'); });
+    return;
+  }
+  var io = new IntersectionObserver(function(es){
+    es.forEach(function(x){ if (x.isIntersecting){ x.target.classList.add('in'); io.unobserve(x.target); } });
+  }, {threshold:0.1});
+  items.forEach(function(e){ io.observe(e); });
+})();
+</script>
+</body>
+</html>
