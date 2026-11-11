@@ -82,65 +82,140 @@ footer{color:var(--muted);font-size:.85rem;letter-spacing:.12em;padding:1.6rem 0
   .stage::before{top:6.05rem}
   .hero::before{top:3.3rem}
 }
+.card-link{display:block;text-decoration:none;color:inherit;transition:border-color .3s,background .3s}
+.card-link:hover,.card-link:focus-visible{border-color:var(--gold);background:#181a1f}
+.card .more{margin-top:.9rem;color:var(--gold-hi);font-size:.9rem;letter-spacing:.04em}
+.topnav{display:flex;align-items:center;gap:1rem;max-width:60rem;margin:0 auto;padding:1rem 1.25rem;font-size:.85rem;letter-spacing:.08em}
+.topnav a{text-decoration:none;color:var(--muted)}
+.topnav .brand{font-family:var(--serif);font-size:1.1rem;letter-spacing:.04em;color:var(--text)}
+.topnav .links{display:flex;gap:1.2rem;margin-left:auto}
+.topnav a:hover{color:var(--gold-hi)}
+.topnav .yt{border:1px solid var(--line);color:var(--gold-hi);padding:.35rem .9rem;border-radius:2px}
+.btns{display:flex;flex-wrap:wrap;gap:.7rem;margin:1.4rem 0}
+.btn.ghost{background:transparent;color:var(--gold-hi);border-color:var(--line)}
+.hero-grid2{display:grid;gap:2.2rem}
+.hero-grid2 h1{font-size:clamp(2.1rem,7vw,3.2rem)}
+.hero-grid2 .btns .btn{padding:.9rem 1.3rem}
+.stats{display:flex;flex-wrap:wrap;gap:1.2rem 2rem;margin:1.6rem 0 0;max-width:40rem}
+.stats dt{font-family:var(--serif);font-size:1.5rem;color:var(--gold-hi);line-height:1.2}
+.stats dd{margin:0;font-size:.85rem;color:var(--muted)}
+.vcard{display:block;text-decoration:none;color:inherit;max-width:34rem}
+.vcard .thumb{position:relative;display:block;border:1px solid var(--line);overflow:hidden;background:var(--panel)}
+.vcard img{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;transition:transform .5s}
+.vcard:hover img{transform:scale(1.03)}
+.vcard .play{position:absolute;left:50%;top:50%;width:3.6rem;height:3.6rem;margin:-1.8rem 0 0 -1.8rem;border-radius:50%;background:rgba(13,14,17,.72);border:1px solid var(--gold)}
+.vcard .play::after{content:"";position:absolute;left:1.4rem;top:1.05rem;border-left:1.1rem solid var(--gold-hi);border-top:.75rem solid transparent;border-bottom:.75rem solid transparent}
+.vcard .vmeta{display:block;margin-top:.8rem;font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold)}
+.vcard .vtitle{display:block;font-family:var(--serif);font-size:1.3rem;line-height:1.3;margin-top:.3rem;color:var(--text)}
+.vcard:hover .vtitle{color:var(--gold-hi)}
+.vcard .more{display:block;margin-top:.5rem;font-size:.9rem;color:var(--gold-hi)}
+.vlist{display:grid;gap:1.8rem;margin:1.6rem 0}
+.about-grid{display:grid;gap:1.6rem}
+@media (max-width:30rem){.topnav .links{display:none}.topnav .yt{margin-left:auto}}
+@media (min-width:48rem){
+  .topnav{padding:1.2rem 2rem}
+  .hero-grid2{grid-template-columns:1.05fr 1fr;align-items:center;gap:2.6rem}
+  .vlist{grid-template-columns:1fr 1fr}
+  .about-grid{grid-template-columns:13rem 1fr;align-items:start}
+  .about-grid .photo{width:13rem;margin:.6rem 0 0}
+}
 </style>
 </head>
 <body>
+<nav class="topnav">
+  <a class="brand" href="./">Alex Hayes</a>
+  <span class="links"><a href="#video">Video</a><a href="#ve-minh">Về mình</a></span>
+  <a class="yt" href="https://www.youtube.com/@Vannam_alexhayes" target="_blank" rel="noopener">YouTube</a>
+</nav>
 <main class="wrap">
 
 <section class="stage hero" id="chang-0">
-  <div class="hero-grid">
+  <div class="hero-grid2">
     <div>
-      <p class="tag">Chặng 0 · Xuất phát</p>
-      <p class="name">Alex Hayes</p>
-      <p class="small">Đang học và làm với AI, công khai</p>
-      <h1>Tôi học AI từ con số 0, làm công khai và kể lại <em>từng bước</em>.</h1>
-      <p>Tôi là người làm kinh doanh thật, đang học dùng AI để làm việc nhanh và thông minh hơn. Mọi thứ tôi học và thử, tôi chia sẻ trên YouTube.</p>
-      <p><a class="btn" href="https://www.youtube.com/@Vannam_alexhayes" target="_blank" rel="noopener">Đăng ký kênh YouTube</a></p>
+      <p class="tag">YouTube · Livestream · Hành trình 10.000 giờ</p>
+      <h1>Học AI từ con số 0, <em>làm công khai</em>.</h1>
+      <p>Mình là Alex Hayes, một người làm kinh doanh thật, đang trên hành trình <b>10.000 giờ</b> học và xây dựng doanh nghiệp cùng AI. Mình livestream việc học từ thứ Hai đến thứ Sáu. Mỗi video đều có một trang tài liệu để bạn vừa đọc vừa làm theo.</p>
+      <div class="btns">
+        <a class="btn" href="excel-bao-cao-tu-dong/">Xem video mới nhất</a>
+        <a class="btn ghost" href="https://www.youtube.com/@Vannam_alexhayes" target="_blank" rel="noopener">Đăng ký kênh</a>
+      </div>
+      <dl class="stats">
+        <div><dt>10.000 giờ</dt><dd>mục tiêu học và làm cùng AI</dd></div>
+        <div><dt>T2–T6</dt><dd>livestream trên YouTube</dd></div>
+        <div><dt>Miễn phí</dt><dd>tài liệu kèm mỗi video</dd></div>
+      </dl>
     </div>
-    <div class="photo"><img src="anh/alex.avif" alt="Ảnh chân dung Alex Hayes" width="960" height="960"></div>
+    <div class="featured">
+      <a class="vcard" href="excel-bao-cao-tu-dong/">
+        <span class="thumb"><img src="anh/video01-anh-bia.webp" alt="Ảnh bìa video: 10.000 dòng Excel, AI làm sạch" width="1280" height="720"><span class="play" aria-hidden="true"></span></span>
+        <span class="vmeta">Video mới nhất · Video 01</span>
+        <span class="vtitle">Claude Code cho người mới: làm sạch Excel 10.000 dòng bằng AI</span>
+        
+      </a>
+    </div>
   </div>
 </section>
 
-<section class="stage reveal" id="chang-1">
-  <p class="tag">Chặng 1 · Lý do</p>
-  <h2>Vì sao tôi học <em>AI</em> công khai</h2>
-  <p>Tôi dùng AI từ năm 2023. Càng dùng, tôi càng thấy AI có thể giúp rất nhiều người đi làm: làm việc nhanh hơn, bớt việc lặp lại, xử lý dữ liệu gọn hơn.</p>
-  <p>Nhưng tôi không muốn chỉ nói. Tôi muốn chứng minh: một người bình thường, bắt đầu từ số 0, có thể học AI và dùng nó trong kinh doanh đến mức nào trong một khoảng thời gian.</p>
-  <p>Vì vậy tôi học công khai. Kênh YouTube của tôi còn rất mới và hiện chủ yếu là livestream. Bạn có thể xem tôi học, thử, sai và sửa ngay trên kênh, rồi đi cùng tôi từng bước.</p>
+<section class="stage reveal" id="video">
+  <p class="tag">Chặng 1 · Video và tài liệu</p>
+  <h2>Xem video, rồi <em>làm theo</em></h2>
+  <p>Bấm vào một video: bạn xem video ở trên, và ngay bên dưới là tài liệu viết kỹ hơn, có kiến thức kèm nguồn, mẫu để chép và bài tập để tự làm trên máy mình. Miễn phí, không cần đăng ký.</p>
+  <div class="vlist">
+      <a class="vcard" href="excel-bao-cao-tu-dong/">
+        <span class="thumb"><img src="anh/video01-anh-bia.webp" alt="Ảnh bìa video: 10.000 dòng Excel, AI làm sạch" width="1280" height="720" loading="lazy"><span class="play" aria-hidden="true"></span></span>
+        <span class="vmeta">Video 01 · 23 phút</span>
+        <span class="vtitle">Claude Code cho người mới: làm sạch Excel 10.000 dòng bằng AI</span>
+        <span class="more">7 chặng · 7 bài tập · có mẫu để chép →</span>
+      </a>
+  </div>
+  <p class="note">Video sau mình sẽ nói về việc nhất định phải xảy ra, skill hay trên GitHub và cách tiết kiệm token.</p>
 </section>
 
-<section class="stage reveal" id="chang-2">
-  <p class="tag">Chặng 2 · Kết quả</p>
-  <h2>Tôi đã làm được <em>gì</em></h2>
+<section class="stage reveal" id="ve-minh">
+  <p class="tag">Chặng 2 · Về mình</p>
+  <div class="about-grid">
+    <div class="photo"><img src="anh/alex.avif" alt="Ảnh chân dung Alex Hayes" width="960" height="960" loading="lazy"></div>
+    <div>
+      <h2>Vì sao mình học <em>AI</em> công khai</h2>
+      <p>Mình dùng AI từ năm 2023. Càng dùng, mình càng thấy AI có thể giúp rất nhiều người đi làm: làm việc nhanh hơn, bớt việc lặp lại, xử lý dữ liệu gọn hơn.</p>
+      <p>Nhưng mình không muốn chỉ nói. Mình muốn chứng minh: một người bình thường, bắt đầu từ số 0, có thể học AI và dùng nó trong kinh doanh đến mức nào trong một khoảng thời gian.</p>
+      <p>Vì vậy mình học công khai. Kênh YouTube của mình còn rất mới. Bạn có thể xem mình học, thử, sai và sửa ngay trên kênh, rồi đi cùng mình từng bước.</p>
+    </div>
+  </div>
+</section>
+
+<section class="stage reveal" id="chang-3">
+  <p class="tag">Chặng 3 · Kết quả</p>
+  <h2>Mình đã làm được <em>gì</em></h2>
   <div class="cards">
     <article class="card">
       <span class="id">Việc thứ nhất</span>
       <h3>Bản tin AI tự đến mỗi sáng</h3>
-      <p>Mỗi sáng tôi nhận các bài báo chính về AI kèm phần phân tích: điều gì có lợi, điều gì bất lợi, điều gì hữu ích cho tôi. Làm tay mất khoảng 1 giờ mỗi ngày, giờ máy tự chạy. Nói thật: máy tính phải đang bật thì nó mới chạy. (Thời gian là ước lượng của tôi.)</p>
+      <p>Mỗi sáng mình nhận các bài báo chính về AI kèm phần phân tích: điều gì có lợi, điều gì bất lợi, điều gì hữu ích cho mình. Làm tay mất khoảng 1 giờ mỗi ngày, giờ máy tự chạy. Nói thật: máy tính phải đang bật thì nó mới chạy. (Thời gian là ước lượng của mình.)</p>
     </article>
     <article class="card">
       <span class="id">Việc thứ hai</span>
       <h3>Dọn file Excel lỗi trong khoảng 5 phút</h3>
-      <p>File xuất từ phần mềm thường đầy dòng thừa, ngày viết dạng chữ. Với Claude Code, tôi dọn sạch trong khoảng 5 phút; làm tay thường mất khoảng 1 giờ. (Ước lượng của tôi, chưa đo chính xác.)</p>
+      <p>File xuất từ phần mềm thường đầy dòng thừa, ngày viết dạng chữ. Với Claude Code, mình dọn sạch trong khoảng 5 phút; làm tay thường mất khoảng 1 giờ. (Ước lượng của mình, chưa đo chính xác.)</p>
     </article>
   </div>
-  <p class="note">Tôi mới ở mức cơ bản với Claude Code và đang tiến lên từng ngày.</p>
+  <p class="note">Mình mới ở mức cơ bản với Claude Code và đang tiến lên từng ngày.</p>
 </section>
 
-<section class="stage reveal" id="chang-3">
-  <p class="tag">Chặng 3 · Bằng chứng</p>
+<section class="stage reveal" id="chang-4">
+  <p class="tag">Chặng 4 · Bằng chứng</p>
   <h2>Kỹ năng và <em>bằng chứng</em></h2>
   <div class="badge"><span>Huy hiệu số · IBM SkillsBuild</span><strong>Getting Started with Generative AI</strong></div>
   <ul class="chips">
     <li>AI Ethics</li><li>Analytical Skills</li><li>Generative AI</li><li>Problem Solving</li><li>Risk Control</li>
   </ul>
-  <p class="note">Đây là huy hiệu đầu tiên của tôi. Tôi sẽ thêm khi học tiếp.</p>
+  <p class="note">Đây là huy hiệu đầu tiên của mình. Mình sẽ thêm khi học tiếp.</p>
 </section>
 
-<section class="stage reveal" id="chang-4">
-  <p class="tag">Chặng 4 · Cảm nhận</p>
-  <h2>Điều tôi cảm nhận về <em>AI</em></h2>
-  <p>Tôi từng làm nhiều việc: nhập khẩu, bán hàng, quản lý đội ngũ. Khi đưa AI vào những việc quen thuộc đó, tôi nhận ra vài điều. Đây là cảm nhận cá nhân qua trải nghiệm của tôi.</p>
+<section class="stage reveal" id="chang-5">
+  <p class="tag">Chặng 5 · Cảm nhận</p>
+  <h2>Điều mình cảm nhận về <em>AI</em></h2>
+  <p>Mình từng làm nhiều việc: nhập khẩu, bán hàng, quản lý đội ngũ. Khi đưa AI vào những việc quen thuộc đó, mình nhận ra vài điều. Đây là cảm nhận cá nhân qua trải nghiệm của mình.</p>
   <ol class="ideas">
     <li>
       <h3>Một trợ lý đắc lực</h3>
@@ -148,36 +223,36 @@ footer{color:var(--muted);font-size:.85rem;letter-spacing:.12em;padding:1.6rem 0
     </li>
     <li>
       <h3>Bớt rất nhiều thời gian</h3>
-      <p>Những việc từng ngốn khoảng một giờ, giờ chỉ còn vài phút. Đó là ước lượng của tôi, nhưng khác biệt đủ để tôi thấy rõ.</p>
+      <p>Những việc từng ngốn khoảng một giờ, giờ chỉ còn vài phút. Đó là ước lượng của mình, nhưng khác biệt đủ để mình thấy rõ.</p>
     </li>
     <li>
       <h3>Cả phần phân tích và nghiên cứu</h3>
-      <p>Ở những phần cần phân tích hay nghiên cứu, có khi AI còn làm tốt hơn tôi.</p>
+      <p>Ở những phần cần phân tích hay nghiên cứu, có khi AI còn làm tốt hơn mình.</p>
     </li>
   </ol>
   <blockquote class="quote">
-    <small>Bài học của tôi</small>
-    <p>Về độ thông minh, tôi không thể bằng AI. Vì vậy, điều tôi chọn là trở thành người dùng AI tốt hơn.</p>
+    <small>Bài học của mình</small>
+    <p>Về độ thông minh, mình không thể bằng AI. Vì vậy, điều mình chọn là trở thành người dùng AI tốt hơn.</p>
   </blockquote>
 </section>
 
-<section class="stage reveal" id="chang-5">
-  <p class="tag">Chặng 5 · Phía trước</p>
+<section class="stage reveal" id="chang-6">
+  <p class="tag">Chặng 6 · Phía trước</p>
   <h2>Bạn sẽ nhận được <em>gì</em></h2>
-  <p>Kênh của tôi đang đi theo hướng này:</p>
+  <p>Kênh của mình đang đi theo hướng này:</p>
   <ul class="list">
     <li>Cách dùng AI cho công việc hằng ngày, dễ hiểu, không thiên về kỹ thuật</li>
     <li>Tự động hoá những việc lặp đi lặp lại</li>
     <li>Làm việc với dữ liệu, hồ sơ, file Excel nhanh hơn</li>
     <li>Kể thật hành trình học: cả cái làm được lẫn cái chưa làm được</li>
   </ul>
-  <p class="note">Đây là kế hoạch. Kênh còn mới và tôi sẽ làm dần.</p>
+  <p class="note">Đây là kế hoạch. Kênh còn mới và mình sẽ làm dần.</p>
 </section>
 
-<section class="stage end reveal" id="chang-6">
-  <p class="tag">Chặng 6 · Đi tiếp</p>
-  <h2>Đi cùng tôi <em>nhé</em></h2>
-  <p>Tôi đang học và làm công khai. Trang này sẽ cập nhật dần.</p>
+<section class="stage end reveal" id="chang-7">
+  <p class="tag">Chặng 7 · Đi tiếp</p>
+  <h2>Đi cùng mình <em>nhé</em></h2>
+  <p>Mình đang học và làm công khai. Trang này sẽ cập nhật dần.</p>
   <p><a class="btn" href="https://www.youtube.com/@Vannam_alexhayes" target="_blank" rel="noopener">Đăng ký kênh YouTube</a></p>
   <footer>© Alex Hayes</footer>
 </section>
