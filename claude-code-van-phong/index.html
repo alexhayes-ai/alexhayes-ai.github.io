@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Claude Code cho dân văn phòng nhà nước, từ A đến Z · Alex Hayes</title>
+<meta name="description" content="Tài liệu đi kèm video của Alex Hayes cho người làm văn phòng nhà nước: làm trọn báo cáo thủ tục hành chính tháng của một xã với Claude Code, từ cài đặt, CLAUDE.md, làm sạch file 6.002 dòng, đối chiếu số liệu, viết báo cáo, công văn, biên bản, đến skill, hẹn giờ và trang theo dõi. Có bộ file mẫu giả lập và đáp án.">
+<style>
+:root{
+  --bg:#0d0e11; --panel:#14161a; --panel2:#181a1f; --line:rgba(201,169,106,.22); --line-soft:rgba(236,232,223,.10);
+  --text:#ece8df; --muted:#a39e92; --gold:#c9a96a; --gold-hi:#e6d3a8; --ok:#9fc28a;
+  --serif:"Palatino Linotype",Palatino,Cambria,"Times New Roman",serif;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  --mono:Consolas,"Cascadia Mono","SFMono-Regular",Menlo,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);font-weight:300;font-size:1.0625rem;line-height:1.75;overflow-x:hidden;
+  background-image:radial-gradient(ellipse at 90% -5%,rgba(201,169,106,.10),transparent 45%)}
+a{color:var(--gold-hi)}
+.top{display:flex;justify-content:space-between;align-items:center;max-width:60rem;margin:0 auto;padding:1rem 1.25rem;font-size:.85rem;letter-spacing:.08em}
+.top a{text-decoration:none;color:var(--muted)} .top a:hover{color:var(--gold-hi)}
+.top .prog{color:var(--gold);white-space:nowrap}
+.wrap{max-width:60rem;margin:0 auto;padding:0 1rem 3rem 3rem;position:relative}
+.wrap::before{content:"";position:absolute;left:1.35rem;top:0;bottom:0;width:1px;background:linear-gradient(to bottom,transparent,var(--gold) 4%,var(--gold) 96%,transparent);opacity:.4}
+.stage{position:relative;padding:3.2rem 0 1rem}
+.stage::before{content:"";position:absolute;left:-1.95rem;top:3.75rem;width:.6rem;height:.6rem;border-radius:50%;background:var(--gold);box-shadow:0 0 0 5px var(--bg),0 0 0 6px var(--line)}
+.stage.done::before{background:var(--ok)}
+.tag{font-size:.74rem;font-weight:500;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin:0 0 1rem}
+.tag .min{color:var(--muted);letter-spacing:.12em}
+h1,h2{font-family:var(--serif);font-weight:400;line-height:1.14;margin:0 0 1.2rem;text-wrap:balance;overflow-wrap:break-word}
+h1{font-size:clamp(2rem,8vw,3.6rem)}
+h2{font-size:clamp(1.7rem,6.4vw,2.6rem)}
+h1 em,h2 em{font-style:italic;color:var(--gold-hi)}
+h3{font-family:var(--serif);font-weight:400;font-size:1.3rem;margin:2rem 0 .7rem;color:var(--text)}
+p{margin:0 0 1.1rem;max-width:40rem;color:#d9d5cb}
+.lead{font-size:1.15rem;color:var(--text)}
+.meta{color:var(--muted);font-size:.92rem;letter-spacing:.04em}
+.btn{display:inline-block;background:linear-gradient(180deg,#d7bb7f,#c0a063);color:#17130a;font-weight:500;font-size:.8rem;letter-spacing:.18em;text-transform:uppercase;text-decoration:none;padding:.9rem 1.5rem;border-radius:2px;border:1px solid #d7bb7f;cursor:pointer;font-family:var(--sans)}
+.btn.ghost{background:transparent;color:var(--gold-hi);border-color:var(--line)}
+.btn:hover{background:transparent;color:var(--gold-hi);border-color:var(--gold)}
+.btns{display:flex;flex-wrap:wrap;gap:.7rem;margin:1.4rem 0}
+:focus-visible{outline:2px solid var(--gold-hi);outline-offset:3px}
+/* hướng dẫn dùng trang */
+.howto{border:1px solid var(--line);background:linear-gradient(135deg,rgba(201,169,106,.08),transparent 70%);padding:1.2rem 1.3rem;margin:1.6rem 0;max-width:42rem}
+.howto p{margin:0;font-size:.98rem}
+/* mục lục */
+.toc{list-style:none;padding:0;margin:1.4rem 0;max-width:42rem;counter-reset:c}
+.toc li{counter-increment:c;border-top:1px solid var(--line-soft)}
+.toc li:last-child{border-bottom:1px solid var(--line-soft)}
+.toc a{display:flex;gap:1rem;padding:.7rem 0;text-decoration:none;color:var(--text)}
+.toc a::before{content:counter(c);font-family:var(--serif);font-style:italic;color:var(--gold);width:1.4rem;flex:none}
+.toc a:hover{color:var(--gold-hi)}
+.toc small{margin-left:auto;color:var(--muted);white-space:nowrap}
+.toc .tick{color:var(--ok)}
+/* khối kiến thức */
+.kn{background:var(--panel);border:1px solid var(--line-soft);border-left:2px solid var(--gold);padding:1.2rem 1.3rem;margin:1.4rem 0;max-width:42rem}
+.kn .h,.ex .h,.err .h{display:block;font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin-bottom:.6rem}
+.kn ul{margin:0;padding-left:1.1rem} .kn li{margin:.35rem 0;color:#d9d5cb}
+.src{font-size:.85rem;color:var(--muted);margin:.8rem 0 0;border-top:1px solid var(--line-soft);padding-top:.6rem}
+.lv{display:inline-block;font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;padding:.1rem .5rem;border-radius:2px;margin-right:.4rem;vertical-align:1px}
+.lv.ok{color:#0d0e11;background:var(--ok)}
+.lv.no{color:var(--gold-hi);border:1px dashed var(--gold)}
+/* mẫu để chép */
+.pr{border:1px solid var(--line-soft);background:var(--panel2);margin:1.2rem 0;max-width:42rem}
+.pr header{display:flex;align-items:center;gap:.8rem;padding:.6rem .9rem;border-bottom:1px solid var(--line-soft);font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.pr header b{color:var(--gold);font-weight:500}
+.pr header span{flex:1;min-width:0}
+.pr pre{margin:0;padding:1rem;white-space:pre-wrap;word-break:break-word;font-family:var(--mono);font-size:.9rem;line-height:1.6;color:var(--text)}
+.copy{flex:none;font:inherit;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:#17130a;background:var(--gold);border:0;border-radius:2px;padding:.35rem .8rem;cursor:pointer}
+.copy.ghost{background:transparent;color:var(--gold-hi);border:1px solid var(--line)}
+.copy.done{background:var(--ok)}
+.hl{color:var(--gold-hi);background:rgba(201,169,106,.14);padding:0 .15rem}
+/* bài tập */
+.ex{border:1px solid var(--gold);padding:1.2rem 1.3rem;margin:1.6rem 0;max-width:42rem;background:linear-gradient(135deg,rgba(201,169,106,.07),transparent 60%)}
+.ex ol{margin:.3rem 0 .8rem;padding-left:1.2rem} .ex li{margin:.3rem 0;color:#d9d5cb}
+.ex .xong{font-size:.95rem;color:var(--muted);margin:0 0 .9rem}
+.ex .xong b{color:var(--gold-hi);font-weight:400}
+.ex .lvl{display:inline-block;font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-hi);border:1px solid var(--line);border-radius:99px;padding:.05rem .6rem;margin:0 0 .7rem}
+.ex details{margin:.2rem 0 1rem;font-size:.95rem;color:var(--muted)}
+.ex summary{cursor:pointer;color:var(--gold-hi)}
+.levels{list-style:none;padding:0;margin:.8rem 0 0;font-size:.95rem}
+.levels li{margin:.25rem 0;color:#d9d5cb}
+.check{display:flex;align-items:center;gap:.6rem;cursor:pointer;color:var(--text);font-size:.95rem}
+.check input{width:1.15rem;height:1.15rem;accent-color:var(--ok)}
+/* hình động minh hoạ */
+.anim{border:1px solid var(--line-soft);background:var(--panel);margin:1.6rem 0;max-width:42rem;padding:.9rem .9rem .8rem}
+.anim .ah{display:flex;justify-content:space-between;align-items:center;gap:.6rem;font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:.7rem}
+.replay{flex:none;font:inherit;font-size:.75rem;letter-spacing:.06em;text-transform:none;color:var(--gold-hi);background:transparent;border:1px solid var(--line);border-radius:2px;padding:.2rem .7rem;cursor:pointer}
+.sb{position:relative;height:240px;overflow:hidden;border-radius:2px;background:#101216;border:1px solid var(--line-soft);font-size:.85rem;line-height:1.45}
+.sb *{transition:opacity .6s ease,transform .7s ease,left 1s ease,top 1s ease,background-color .4s,border-color .4s,color .4s,box-shadow .4s}
+.anim.reset .sb *{transition:none!important}
+.caps{list-style:none;padding:0;margin:.8rem 0 0;counter-reset:k}
+.caps li{counter-increment:k;position:relative;padding:.15rem 0 .15rem 1.6rem;font-size:.93rem;color:var(--muted);opacity:.45;transition:opacity .4s,color .4s}
+.caps li::before{content:counter(k);position:absolute;left:0;top:.15rem;font-family:var(--serif);font-style:italic;color:var(--gold)}
+.caps li.past{opacity:.8}
+.caps li.on{opacity:1;color:var(--text)}
+/* 1 · hay quên */
+.a-mem .bar{position:absolute;left:0;right:0;top:0;height:30px;border-bottom:1px solid var(--line-soft);display:flex;align-items:center;gap:6px;padding:0 10px;font-size:.75rem;color:var(--muted)}
+.a-mem .bar i{width:7px;height:7px;border-radius:50%;background:#333840}
+.a-mem .bar span{position:absolute;left:50%;transform:translateX(-50%);white-space:nowrap}
+.a-mem .t2{opacity:0;color:var(--gold-hi)}
+.bub{position:absolute;top:46px;max-width:70%;padding:.45rem .7rem;border-radius:10px;opacity:0;transform:translateY(8px);color:var(--text)}
+.bub.u{right:12px;background:rgba(201,169,106,.18)}
+.bub.c{left:12px;background:#1d2026;border:1px solid var(--line-soft)}
+.bub.c.hello{border-color:var(--gold)}
+.mdcard{position:absolute;right:12px;bottom:12px;width:48%;display:grid;gap:1px;font-family:var(--mono);font-size:.72rem;color:#cfcbc1;background:#15171b;border:1px solid var(--gold);padding:.45rem .6rem;opacity:0;transform:translateX(30px)}
+.mdcard b{color:var(--gold-hi);font-weight:400}
+.anim.s1 .a-mem .u{opacity:1;transform:none}
+.anim.s2 .a-mem .u,.anim.s2 .a-mem .t1{opacity:0}
+.anim.s2 .a-mem .t2{opacity:1}
+.anim.s2 .a-mem .forget{opacity:1;transform:none}
+.anim.s3 .a-mem .mdcard{opacity:1;transform:none}
+.anim.s4 .a-mem .forget{opacity:0}
+.anim.s4 .a-mem .hello{opacity:1;transform:none}
+.anim.s4 .a-mem .mdcard{box-shadow:0 0 0 4px rgba(201,169,106,.2)}
+/* 2 · kiểm tổng */
+.a-sum .lbl{position:absolute;opacity:0;color:#d9d5cb}
+.a-sum .lbl b{font-family:var(--serif);font-weight:400;font-size:1.25rem;color:var(--gold-hi)}
+.a-sum .l0{left:6%;top:16px}
+.a-sum .l1{left:6%;top:84px}
+.a-sum .l2{right:6%;top:150px;text-align:right}
+.a-sum .bk{position:absolute;top:50px;height:26px;opacity:0}
+.a-sum .keep{left:6%;width:83.6%;background:repeating-linear-gradient(90deg,#c9a96a 0 3px,#b8975a 3px 5px)}
+.a-sum .drop{left:89.6%;width:4.4%;background:repeating-linear-gradient(90deg,#a39e92 0 2px,#6d6960 2px 4px)}
+.a-sum .eq{position:absolute;left:0;right:0;top:194px;text-align:center;font-family:var(--serif);font-size:1.25rem;color:var(--text);opacity:0;transform:translateY(8px)}
+.a-sum .eq em{font-style:normal;font-family:var(--sans);font-size:.8rem;color:#0d0e11;background:var(--ok);padding:.1rem .45rem;border-radius:2px;margin-left:.3rem;opacity:0}
+.anim.s1 .a-sum .l0,.anim.s1 .a-sum .bk{opacity:1}
+.anim.s2 .a-sum .drop{transform:translateY(70px)}
+.anim.s2 .a-sum .l1,.anim.s2 .a-sum .l2{opacity:1}
+.anim.s2 .a-sum .l0{opacity:.35}
+.anim.s3 .a-sum .eq{opacity:1;transform:none}
+.anim.s4 .a-sum .eq em{opacity:1}
+.anim.s4 .a-sum .bk{box-shadow:0 0 0 2px var(--ok)}
+/* 3 · công thức 4 phần */
+.sb.a-fx{height:auto;min-height:200px;padding:16px}
+.a-fx .ch4{display:flex;flex-wrap:wrap;gap:6px}
+.a-fx .ch4 span{font-size:.78rem;border:1px solid var(--line-soft);color:var(--muted);padding:.15rem .55rem;border-radius:99px}
+.a-fx .sent{margin-top:18px;font-family:var(--mono);font-size:.88rem;line-height:1.9;color:var(--text)}
+.a-fx .sent span{opacity:.1;border-bottom:2px solid var(--gold);padding-bottom:1px}
+.a-fx .sent sup{font-family:var(--serif);font-style:italic;color:var(--gold);font-size:.75rem;margin-right:2px}
+.a-fx .okl{display:inline-block;margin-top:14px;font-size:.8rem;color:#0d0e11;background:var(--ok);padding:.15rem .55rem;border-radius:2px;opacity:0}
+.anim.s1 .a-fx .p1,.anim.s2 .a-fx .p2,.anim.s3 .a-fx .p3,.anim.s4 .a-fx .p4{opacity:1}
+.anim.s1:not(.s2) .a-fx .c1,.anim.s2:not(.s3) .a-fx .c2,.anim.s3:not(.s4) .a-fx .c3,.anim.s4:not(.s5) .a-fx .c4{border-color:var(--gold);color:var(--gold-hi);background:rgba(201,169,106,.12)}
+.anim.s5 .a-fx .ch4 span{border-color:var(--line);color:var(--gold-hi)}
+.anim.s5 .a-fx .okl{opacity:1}
+@media (prefers-reduced-motion:reduce){.sb *,.caps li{transition:none!important}}
+/* lỗi hay gặp */
+.err{margin:1.4rem 0;max-width:42rem}
+.err dl{margin:0} .err dt{color:var(--text);margin-top:.6rem} .err dd{margin:0 0 .4rem;color:var(--muted);font-size:.95rem}
+/* form */
+.form{display:grid;gap:.9rem;margin:1rem 0;max-width:42rem}
+.form label{display:grid;gap:.3rem;font-size:.92rem;color:var(--muted)}
+.form input,.form textarea{width:100%;font:inherit;font-size:.98rem;color:var(--text);background:var(--panel);border:1px solid var(--line-soft);border-radius:2px;padding:.6rem .7rem}
+.form textarea{min-height:4.2rem;resize:vertical}
+.form input:focus,.form textarea:focus{border-color:var(--gold);outline:none}
+/* số liệu */
+.sum{display:flex;flex-wrap:wrap;align-items:baseline;gap:.4rem .9rem;font-family:var(--serif);font-size:clamp(1.4rem,5vw,2rem);margin:1rem 0;color:var(--text)}
+.sum b{color:var(--gold-hi);font-weight:400} .sum small{font-family:var(--sans);font-size:.85rem;color:var(--muted);width:100%}
+.tree{font-family:var(--mono);font-size:.88rem;line-height:1.7;background:var(--panel);border:1px solid var(--line-soft);padding:1rem;max-width:42rem;white-space:pre;overflow-x:auto;color:#d9d5cb}
+.list{list-style:none;padding:0;margin:1rem 0;max-width:40rem}
+.list li{position:relative;padding:.7rem 0 .7rem 1.8rem;border-bottom:1px solid var(--line-soft);color:#d9d5cb}
+.list li::before{content:"";position:absolute;left:.2rem;top:1.45rem;width:.5rem;height:1px;background:var(--gold)}
+.quote{margin:2rem 0 1rem;padding:.3rem 0 .3rem 1.4rem;border-left:1px solid var(--gold);max-width:40rem}
+.quote p{font-family:var(--serif);font-style:italic;font-size:clamp(1.25rem,4.6vw,1.7rem);line-height:1.4;color:var(--gold-hi);margin:0}
+footer{color:var(--muted);font-size:.85rem;letter-spacing:.1em;padding:1.6rem 0 0;border-top:1px solid var(--line-soft);margin-top:2.4rem}
+.toast{position:fixed;left:50%;bottom:1.2rem;transform:translateX(-50%) translateY(150%);background:var(--ok);color:#0d0e11;font-size:.85rem;padding:.5rem 1rem;border-radius:2px;transition:transform .25s}
+.toast.show{transform:translateX(-50%)}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.toast{transition:none}}
+@media (min-width:48rem){
+  body{font-size:1.125rem}
+  .top{padding:1.2rem 2rem}
+  .wrap{padding:0 2rem 4rem 5rem}
+  .wrap::before{left:2.3rem}
+  .stage::before{left:-2.85rem;top:5.05rem}
+  .stage{padding-top:4.5rem}
+  .form.two{grid-template-columns:1fr 1fr}
+}
+/* 4 · chạy tự động mỗi ngày */
+.a-auto .fd{position:absolute;width:24%;height:52px;border:1px solid var(--line);border-radius:3px;background:#15171b}
+.a-auto .fd::before{content:"";position:absolute;left:-1px;top:-7px;width:40%;height:7px;border:1px solid var(--line);border-bottom:0;border-radius:3px 3px 0 0;background:#15171b}
+.a-auto .fd span{position:absolute;left:6px;top:2px;font-size:.66rem;color:var(--muted);white-space:nowrap}
+.a-auto .can{left:3%;top:96px}
+.a-auto .bc{left:73%;top:36px}
+.a-auto .xl{left:73%;top:150px}
+.a-auto .hub{position:absolute;left:38%;top:84px;width:24%;height:76px;border:1px solid var(--line-soft);border-radius:6px;background:#181a1f;text-align:center}
+.a-auto .hub .clk{position:absolute;left:0;right:0;top:4px;font-family:var(--serif);font-size:1rem;color:var(--muted)}
+.a-auto .hub .k2{opacity:0;color:var(--gold-hi)}
+.a-auto .hub small{position:absolute;left:0;right:0;bottom:3px;font-size:.66rem;color:var(--muted);letter-spacing:.08em}
+.a-auto .tagok{position:absolute;left:38%;width:24%;top:166px;text-align:center;font-size:.7rem;padding:.1rem 0;border-radius:2px;opacity:0;color:#0d0e11;background:var(--ok)}
+.a-auto .fl{position:absolute;left:9%;top:-44px;width:24px;height:30px;border:1px solid var(--gold);border-radius:2px 8px 2px 2px;background:#1d2026;font-size:.62rem;line-height:28px;text-align:center;color:var(--gold-hi)}
+.a-auto .rp{position:absolute;left:79%;top:54px;width:24px;height:30px;border:1px solid var(--ok);border-radius:2px;background:#1d2026;opacity:0;transform:scale(.5);font-size:.58rem;line-height:28px;text-align:center;color:var(--ok)}
+.anim.s1 .a-auto .fl{top:114px}
+.anim.s2 .a-auto .hub{border-color:var(--gold);box-shadow:0 0 0 4px rgba(201,169,106,.15)}
+.anim.s2 .a-auto .k1{opacity:0}
+.anim.s2 .a-auto .k2{opacity:1}
+.anim.s3 .a-auto .fl{left:calc(50% - 12px);top:108px}
+.anim.s3:not(.s5) .a-auto .tagok{opacity:1}
+.anim.s4 .a-auto .rp{opacity:1;transform:none}
+.anim.s5 .a-auto .fl{left:79%;top:168px}
+/* mốc phút, về mình, bảng so sánh */
+.t{color:var(--muted);text-decoration:none;border-bottom:1px dotted var(--muted)}
+a.t:hover{color:var(--gold-hi)}
+.about{display:grid;gap:1.2rem;align-items:center;border:1px solid var(--line);padding:1.3rem;max-width:42rem;margin:1.6rem 0;background:linear-gradient(135deg,rgba(201,169,106,.08),transparent 70%)}
+.about img{width:6.5rem;height:6.5rem;border-radius:50%;object-fit:cover;object-position:50% 30%;border:1px solid var(--gold)}
+.about p{margin:0 0 .6rem}
+.about .name{font-family:var(--serif);font-size:1.3rem;color:var(--text);margin:0 0 .2rem}
+.steps{max-width:42rem;padding-left:1.3rem;margin:.6rem 0 1.2rem}.steps li{margin:.35rem 0;color:#d9d5cb}
+.player{margin:1.4rem 0 1.6rem;max-width:44rem}
+.player .pv,.player iframe{position:relative;display:block;width:100%;aspect-ratio:16/9;border:1px solid var(--line);background:var(--panel)}
+.player img{display:block;width:100%;height:100%;object-fit:cover}
+.player .play{position:absolute;left:50%;top:50%;width:4.2rem;height:4.2rem;margin:-2.1rem 0 0 -2.1rem;border-radius:50%;background:rgba(13,14,17,.72);border:1px solid var(--gold)}
+.player .play::after{content:"";position:absolute;left:1.65rem;top:1.25rem;border-left:1.3rem solid var(--gold-hi);border-top:.85rem solid transparent;border-bottom:.85rem solid transparent}
+.player .pv:hover .play{background:rgba(201,169,106,.3)}
+.player figcaption{font-size:.85rem;color:var(--muted);margin-top:.5rem}
+.cmp{width:100%;max-width:42rem;border-collapse:collapse;margin:1.2rem 0;font-size:.95rem}
+.cmp th,.cmp td{text-align:left;vertical-align:top;padding:.6rem .5rem;border-bottom:1px solid var(--line-soft);color:#d9d5cb}
+.cmp th{font-weight:400;color:var(--gold);font-size:.74rem;letter-spacing:.14em;text-transform:uppercase}
+.cmp td:first-child{color:var(--muted);width:30%}
+@media (min-width:40rem){.about{grid-template-columns:auto 1fr}}
+/* ===== Trang video văn phòng: mục lục cố định bên trái ===== */
+code{font-family:var(--mono);font-size:.9em;color:var(--gold-hi);background:rgba(201,169,106,.10);padding:0 .25rem;border-radius:2px;overflow-wrap:anywhere}
+.top{max-width:none}
+.top .tools{display:flex;align-items:center;gap:.8rem}
+.fs{font:inherit;font-size:.78rem;letter-spacing:.08em;color:var(--gold-hi);background:transparent;border:1px solid var(--line);border-radius:2px;padding:.2rem .6rem;cursor:pointer}
+html.big body{font-size:1.3rem}
+html.big .pr pre{font-size:1.05rem}
+.side{display:none}
+.side .sh{font-size:.7rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin:.2rem .5rem .8rem}
+.side ol{list-style:none;margin:0;padding:0}
+.side a{display:flex;gap:.55rem;padding:.42rem .5rem;color:var(--muted);text-decoration:none;font-size:.88rem;line-height:1.35;border-left:2px solid transparent}
+.side a:hover{color:var(--text)}
+.side a .n{font-family:var(--serif);font-style:italic;color:var(--gold);width:1.3rem;flex:none}
+.side a.cur{color:var(--gold-hi);border-left-color:var(--gold);background:rgba(201,169,106,.08)}
+.side a.ok .n{color:var(--ok)}
+.side a.ok::after{content:"✓";margin-left:auto;color:var(--ok)}
+.side .pg{margin:1rem .5rem 0;font-size:.82rem;color:var(--muted)}
+.side .bar2{height:3px;background:var(--line-soft);margin:.4rem .5rem 0}
+.side .bar2 i{display:block;height:100%;width:0;background:var(--ok);transition:width .3s}
+.mbtn{position:fixed;right:1rem;bottom:1rem;z-index:40;font:inherit;font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;color:#17130a;background:var(--gold);border:0;border-radius:99px;padding:.65rem 1.1rem;box-shadow:0 4px 18px rgba(0,0,0,.5);cursor:pointer}
+.side.open{display:block;position:fixed;left:0;top:0;bottom:0;width:min(20rem,86vw);z-index:60;overflow-y:auto;background:#111216;border-right:1px solid var(--line);padding:1rem .8rem 2rem}
+.shade{display:none;position:fixed;inset:0;z-index:55;background:rgba(0,0,0,.55)}
+.shade.on{display:block}
+.side .x{float:right;font:inherit;color:var(--muted);background:transparent;border:0;font-size:1.3rem;cursor:pointer}
+@media (min-width:64rem){
+  body{padding-left:16.5rem}
+  .side{display:block;position:fixed;left:0;top:0;bottom:0;width:16.5rem;overflow-y:auto;border-right:1px solid var(--line-soft);background:rgba(13,14,17,.96);padding:1.2rem .8rem 2rem;z-index:30}
+  .side .x,.mbtn,.shade{display:none!important}
+}
+/* nhãn đã chạy thử */
+.lv.run{color:#0d0e11;background:#d7bb7f}
+/* bảng số */
+.cmp td.n,.cmp th.n{text-align:right;white-space:nowrap}
+.tbl{overflow-x:auto;max-width:42rem}
+.tbl .cmp td:first-child{width:auto}
+.note{font-size:.92rem;color:var(--muted);max-width:42rem}
+.ans{border:1px dashed var(--line);padding:.8rem 1rem;margin:1rem 0;max-width:42rem}
+.ans summary{cursor:pointer;color:var(--gold-hi)}
+/* hình động dạng bước, dùng chung */
+.sb.flow{height:auto;min-height:0;padding:14px}
+.sb [data-s]{opacity:0;transform:translateY(8px)}
+.anim.s1 .sb [data-s="1"],.anim.s2 .sb [data-s="2"],.anim.s3 .sb [data-s="3"],.anim.s4 .sb [data-s="4"],.anim.s5 .sb [data-s="5"]{opacity:1;transform:none}
+.row4{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+@media (min-width:34rem){.row4{grid-template-columns:repeat(4,1fr)}}
+.bx{border:1px solid var(--line-soft);background:#15171b;border-radius:3px;padding:.5rem .55rem;font-size:.8rem;color:#d9d5cb}
+.bx b{display:block;color:var(--gold-hi);font-weight:400;font-family:var(--serif);font-size:.98rem;margin-bottom:.15rem}
+.bx small{display:block;color:var(--muted);font-size:.72rem}
+.bx.ok{border-color:var(--ok)} .bx.ok b{color:var(--ok)}
+.bx.warn{border-color:var(--gold)}
+.res{margin-top:10px;text-align:center;font-family:var(--serif);font-size:1.05rem;color:var(--text)}
+.res em{font-style:normal;font-family:var(--sans);font-size:.75rem;color:#0d0e11;background:var(--ok);padding:.1rem .45rem;border-radius:2px;margin-left:.3rem}
+.funnel{display:grid;gap:7px}
+.fr{display:flex;align-items:center;gap:8px;font-size:.82rem;color:#d9d5cb}
+.fr .bb{height:22px;background:repeating-linear-gradient(90deg,#c9a96a 0 3px,#b8975a 3px 5px);border-radius:2px;flex:none}
+.fr .bb.g{background:repeating-linear-gradient(90deg,#a39e92 0 2px,#6d6960 2px 4px)}
+.fr .bb.k{background:var(--ok)}
+.fr b{font-family:var(--serif);font-weight:400;color:var(--gold-hi);font-size:1rem}
+.drow{font-family:var(--mono);font-size:.8rem;display:grid;grid-template-columns:repeat(3,1fr);gap:6px;text-align:center}
+.drow div{border:1px solid var(--line-soft);padding:.35rem .2rem;background:#15171b;border-radius:2px}
+.drow small{display:block;font-family:var(--sans);color:var(--muted);font-size:.66rem}
+.anim.s2 .drow .d1{border-color:var(--gold);color:var(--gold-hi)}
+.anim.s4 .drow .d3{border-color:var(--ok);color:var(--ok)}
+.anim.s3 .drow .d3 .bad{text-decoration:line-through;color:#c97b6a}
+.flag{margin-top:8px;font-size:.82rem;color:#d9d5cb;text-align:center}
+.flag b{color:var(--gold-hi);font-weight:400}
+</style>
+</head>
+<body>
+<aside class="side" id="side" aria-label="Mục lục">
+  <button class="x" type="button" id="side-x" aria-label="Đóng mục lục">×</button>
+  <p class="sh">Mục lục</p>
+  <ol id="toc">
+    <li><a href="#chang-0"><span class="n">·</span>Giới thiệu, tải bộ file</a></li>
+    <li><a href="#chang-1" data-c="1"><span class="n">1</span>Chị Hà và một tháng việc ở xã</a></li>
+    <li><a href="#chang-2" data-c="2"><span class="n">2</span>Hạt cam: điều cốt lõi phải biết</a></li>
+    <li><a href="#chang-3" data-c="3"><span class="n">3</span>Chuẩn bị: gói, cài đặt, thẻ căn cước</a></li>
+    <li><a href="#chang-4" data-c="4"><span class="n">4</span>Sổ bàn giao của thư mục</a></li>
+    <li><a href="#chang-5" data-c="5"><span class="n">5</span>Đọc đề, khám và làm sạch 6.002 dòng</a></li>
+    <li><a href="#chang-6" data-c="6"><span class="n">6</span>Kiểm số và đối chiếu</a></li>
+    <li><a href="#chang-7" data-c="7"><span class="n">7</span>Biểu 02, báo cáo, công văn, biên bản</a></li>
+    <li><a href="#chang-8" data-c="8"><span class="n">8</span>Đóng gói thành skill</a></li>
+    <li><a href="#chang-9" data-c="9"><span class="n">9</span>Mỗi sáng một danh sách việc</a></li>
+    <li><a href="#chang-10" data-c="10"><span class="n">10</span>Trang theo dõi cho lãnh đạo</a></li>
+    <li><a href="#chang-11" data-c="11"><span class="n">11</span>Trước và sau, giới hạn</a></li>
+    <li><a href="#nguon"><span class="n">·</span>Nguồn đã đối chiếu</a></li>
+  </ol>
+  <p class="pg" id="prog-side">Bài tập: 0/11</p>
+  <div class="bar2"><i id="prog-bar"></i></div>
+</aside>
+<div class="shade" id="shade"></div>
+<button class="mbtn" type="button" id="mbtn">☰ Mục lục</button>
+
+<nav class="top">
+  <a href="../">← Alex Hayes</a>
+  <span class="tools"><button class="fs" type="button" id="fs" title="Phóng to chữ để chiếu lên màn hình">A+ Chữ to</button><span class="prog" id="prog">Bài tập: 0/11</span></span>
+</nav>
+
+<main class="wrap">
+
+<!-- CHẶNG 0 · GIỚI THIỆU -->
+<section class="stage" id="chang-0">
+  <p class="tag">Claude Code cho văn phòng nhà nước · Video 02</p>
+  <h1>Claude Code cho dân văn phòng <em>nhà nước</em>, từ A đến Z</h1>
+
+  <figure class="player" id="player">
+    <a class="pv" id="player-link" href="https://www.youtube.com/@Vannam_alexhayes" target="_blank" rel="noopener">
+      <span style="position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:1rem;font-family:var(--serif);font-size:clamp(1.2rem,4vw,1.8rem);color:var(--gold-hi);background:radial-gradient(ellipse at 50% 40%,rgba(201,169,106,.14),transparent 70%)">Video đang được quay</span>
+    </a>
+    <figcaption id="player-cap">Video sẽ phát ngay tại đây khi lên YouTube. Trong lúc chờ, bấm vào khung để mở kênh.</figcaption>
+  </figure>
+
+  <p class="lead">Mình đi cùng chị Hà, một chuyên viên văn phòng ở xã, làm trọn báo cáo thủ tục hành chính tháng 10 với Claude Code: đọc công văn của tỉnh, làm sạch file 6.002 dòng, lập biểu, đối chiếu số giữa các phòng, viết báo cáo, công văn, biên bản. Sau đó gói cả quy trình thành một câu lệnh, cho nó tự lập danh sách việc mỗi sáng, và làm một trang theo dõi cho lãnh đạo xã.</p>
+  <p class="meta">11 chặng · 11 bài tập · đọc khoảng 40 phút · làm theo khoảng 4–5 giờ, nên chia nhiều buổi · của <a href="#ve-minh">Alex Hayes</a></p>
+  <div class="btns">
+    <a class="btn" href="#chang-1">Bắt đầu chặng 1</a>
+    <a class="btn ghost" id="xem-video" href="https://www.youtube.com/@Vannam_alexhayes" target="_blank" rel="noopener">Mở trên YouTube</a>
+  </div>
+
+  <div class="howto">
+    <p><b>Cách dùng trang này.</b> Mỗi chặng đi đúng thứ tự một chương trong video, nhưng viết kỹ hơn: <b>làm gì</b>, <b>vì sao</b>, <b>làm thế nào</b>, <b>kiểm thế nào</b>. Bấm <b>Chép</b>, dán vào ô chat của Claude Code. Mục lục bên trái (trên điện thoại: nút <b>☰ Mục lục</b> ở góc dưới) đưa bạn tới chương bất kỳ. Nút <b>A+</b> ở trên phóng to chữ, tiện khi chiếu lên màn hình.</p>
+    <ul class="levels">
+      <li><b>Mức 1 · Làm theo mẫu</b> (bài 1–4): có sẵn câu lệnh, bạn chép và làm theo.</li>
+      <li><b>Mức 2 · Có gợi ý</b> (bài 5–8): bạn tự viết một phần, bí thì mở gợi ý.</li>
+      <li><b>Mức 3 · Tự làm</b> (bài 9–11): chỉ có mục tiêu và cách kiểm, bạn tự tìm đường.</li>
+    </ul>
+    <p class="meta" style="margin-top:.6rem">Vì sao chia mức: lúc đầu có mẫu để bạn không bị bí; sau đó bớt dần để bạn tự làm được việc của chính mình. Làm xong bài nào thì tích vào ô của bài đó, trình duyệt của bạn sẽ nhớ.</p>
+  </div>
+
+  <h3>Tải bộ file mẫu</h3>
+  <p>Toàn bộ video dùng một bộ file <b>giả lập</b>: tên xã, tên người, số liệu đều không có thật; số điện thoại đã ẩn. Mình tạo đúng số liệu trước, rồi cố tình cài lỗi vào, nên có đáp án chắc chắn để bạn so.</p>
+  <div class="btns">
+    <a class="btn" href="tai/bo-file-mau-xa-phong-thanh.zip" download>Tải bộ file (khoảng 0,8 MB)</a>
+    <a class="btn ghost" href="tai/dap-an-xa-phong-thanh.zip" download>Tải đáp án (chỉ mở sau khi làm)</a>
+  </div>
+  <p class="note">Giải nén bộ file vào một thư mục riêng, ví dụ <code>D:\thu-claude-code\bao-cao-tthc-thang-10</code>. Đáp án thì để ở chỗ khác, <b>không</b> để trong thư mục làm việc: Claude đọc được mọi file trong thư mục bạn mở, nhìn thấy đáp án thì phép thử không còn ý nghĩa.</p>
+
+  <h3>Chuẩn bị (làm một lần)</h3>
+  <ol class="steps">
+    <li>Cần <b>gói Pro</b> trở lên để dùng Claude Code (chặng 3).</li>
+    <li>Tải app Claude cho máy tính ở <a href="https://claude.com/download" target="_blank" rel="noopener">claude.com/download</a>, đăng nhập, chọn thẻ <b>Code</b>.</li>
+    <li>Mọi câu lệnh trên trang này, kể cả lệnh bắt đầu bằng dấu <code>/</code>, đều gõ hoặc dán vào ô chat của thẻ Code.</li>
+  </ol>
+  <details class="kn" style="padding:1rem 1.3rem"><summary style="cursor:pointer;color:var(--gold-hi)">Từ cần biết (bấm để mở)</summary>
+    <ul style="margin-top:.6rem">
+      <li><b>Claude Code:</b> Claude làm việc ngay trên máy bạn: mở, đọc, tạo, sửa file trong thư mục bạn cho phép.</li>
+      <li><b>Cuộc trò chuyện (phiên):</b> một lượt làm việc với Claude. Mở cuộc trò chuyện mới là bắt đầu với "cuốn sổ trắng".</li>
+      <li><b>CLAUDE.md:</b> file chữ bình thường ghi điều Claude cần biết; Claude đọc nó đầu mỗi cuộc trò chuyện (chặng 2–4).</li>
+      <li><b>Thủ tục hành chính (TTHC):</b> việc người dân làm với cơ quan nhà nước, ví dụ khai sinh, chứng thực, xin phép xây nhà. Mỗi lần nộp là một <b>hồ sơ</b>.</li>
+      <li><b>Biểu 01, Biểu 02:</b> trong bộ file này, Biểu 01 là bảng số theo lĩnh vực, Biểu 02 là danh sách hồ sơ quá hạn. Tên và mẫu là giả lập theo kiểu báo cáo thường gặp.</li>
+      <li><b>Skill:</b> một quy trình bạn dạy Claude một lần rồi đặt tên, lần sau gọi lại (chặng 8).</li>
+      <li><b>Token, lượt dùng:</b> lượng chữ Claude đọc và viết; mỗi gói có giới hạn.</li>
+    </ul>
+  </details>
+  <p class="meta">Mình cũng đang học. Mỗi khẳng định có nhãn: <span class="lv ok">Đã kiểm chứng</span> có link tài liệu chính thức · <span class="lv run">Đã chạy thử</span> mình đã chạy với bộ file này · <span class="lv no">Chưa xác minh</span> mình chưa tự kiểm được, bạn thử thì cẩn thận hơn.</p>
+</section>
+
+<!-- CHẶNG 1 -->
+<section class="stage" id="chang-1" data-ex="1">
+  <p class="tag">Chặng 1 · Mở đầu <span class="min">· ▶ <a class="t" data-t="0">--:--</a></span></p>
+  <h2>Một tháng việc của <em>chị Hà</em> ở xã</h2>
+  <p><b>Làm gì:</b> hiểu câu chuyện, hiểu một hồ sơ thủ tục hành chính là gì, và biết mỗi thư mục trong bộ file dùng để làm gì.</p>
+  <p><b>Vì sao:</b> Claude chỉ làm tốt khi bạn biết mình đang đòi cái gì. Không hiểu đề thì bạn không giao việc rõ được, và cũng không nhận ra khi Claude làm sai.</p>
+
+  <h3>Chị Hà là ai</h3>
+  <p>Chị Hà là nhân vật giả lập, chuyên viên Văn phòng HĐND và UBND xã Phong Thạnh. Cuối tháng 10, tỉnh gửi Công văn 1187: các xã báo cáo kết quả giải quyết thủ tục hành chính tháng 10, <b>hạn 17 giờ ngày 05/11</b>. Chị có trong tay file xuất từ Trung tâm Phục vụ hành chính công, báo cáo của hai phòng, và biểu tháng 9 đã gửi.</p>
+  <div class="kn">
+    <span class="h">Kiến thức cần biết</span>
+    <ul>
+      <li>Từ năm 2025, Ủy ban nhân dân cấp xã có 3 phòng chuyên môn: Văn phòng HĐND và UBND, Phòng Kinh tế, Phòng Văn hóa – Xã hội.</li>
+      <li>Theo Văn phòng Chính phủ (số năm 2017), cán bộ địa phương dành khoảng 26% thời gian để làm báo cáo.</li>
+      <li>Hồ sơ quá hạn phải có lý do và phiếu xin lỗi người dân, theo cơ chế một cửa.</li>
+    </ul>
+    <p class="src"><span class="lv ok">Đã kiểm chứng</span> 3 phòng: Nghị định 150/2025, sửa bởi Nghị định 370/2025 (tổng hợp ở <a href="https://lsvn.vn/cac-phong-chuyen-mon-cua-ubnd-cap-xa-sau-sap-nhap-a159443.html" target="_blank" rel="noopener">lsvn.vn</a>) · 26%: <a href="https://theleader.vn/25-thoi-gian-cua-cong-chuc-de-lam-bao-cao-d34984.html" target="_blank" rel="noopener">TheLEADER, 13/9/2017</a>. <span class="lv no">Chưa xác minh</span> phiếu xin lỗi: Nghị định 61/2018, Thông tư 01/2018/TT-VPCP, mình chưa đọc nguyên văn điều khoản. Tra ngày 16/11/2026.</p>
+  </div>
+
+  <h3>Một hồ sơ đi qua xã thế nào</h3>
+  <figure class="anim" data-anim="4">
+    <div class="ah"><span>Hình minh hoạ · Một hồ sơ, ba ngày quan trọng</span><button class="replay" type="button">↺ Xem lại</button></div>
+    <div class="sb flow" aria-hidden="true">
+      <div class="row4">
+        <div class="bx" data-s="1"><b>Nộp</b>Người dân nộp giấy khai sinh tại quầy<small>Ngày nhận: 06/10</small></div>
+        <div class="bx" data-s="2"><b>Hẹn</b>Trung tâm ghi ngày hẹn trả<small>Ngày hẹn: 08/10</small></div>
+        <div class="bx" data-s="3"><b>Xử lý</b>Văn phòng (phụ trách Hộ tịch) giải quyết<small>Phòng phụ trách</small></div>
+        <div class="bx ok" data-s="4"><b>Trả</b>Trả kết quả cho người dân<small>Ngày trả: 07/10</small></div>
+      </div>
+      <p class="res" data-s="4">Trả trước ngày hẹn → <b>trước hạn</b><em>tính vào tháng 10</em></p>
+    </div>
+    <ol class="caps"><li>Người dân nộp hồ sơ, hệ thống ghi ngày nhận.</li><li>Trung tâm hẹn ngày trả.</li><li>Phòng phụ trách lĩnh vực đó xử lý.</li><li>Ngày trả so với ngày hẹn cho biết trước hạn, đúng hạn hay quá hạn.</li></ol>
+    <p class="note" style="margin:.5rem 0 0">Ngày trong hình là ví dụ tự đặt. File thật có ba cột ngày như vậy cho mỗi hồ sơ.</p>
+  </figure>
+
+  <h3>Bộ file có gì, nối với nhau thế nào</h3>
+  <p>Hãy hình dung: thư mục <b>00–05 là đề bài</b> chị Hà nhận được, <b>98 là bài giải mẫu</b>, <b>99 là đáp án để chấm</b>.</p>
+  <div class="tbl"><table class="cmp">
+    <thead><tr><th>Thư mục</th><th>Có gì</th><th>Dùng để</th></tr></thead>
+    <tbody>
+      <tr><td>00-thong-tin-chung</td><td>Bảng phân công: 7 lĩnh vực, phòng phụ trách, thủ tục thường gặp</td><td>Từ điển tên chuẩn: "Ho tich", "Hộ Tịch" đều gom về "Hộ tịch"</td></tr>
+      <tr><td>01-du-lieu-trung-tam</td><td>File xuất 6.002 dòng, hồ sơ từ 01/9 đến 31/10</td><td><b>Nguồn số chính thức</b>. Có cả tháng 9 để biết hồ sơ nào còn tồn sang tháng 10</td></tr>
+      <tr><td>02-bao-cao-cac-phong</td><td>Báo cáo Phòng Kinh tế (2 bản), Phòng VH-XH, một ảnh Zalo</td><td>Số các phòng tự đếm, chỉ để <b>đối chiếu</b></td></tr>
+      <tr><td>03-ky-truoc</td><td>Biểu 01 tháng 9 đã gửi tỉnh</td><td>Kiểm số nối tiếp: tháng 9 báo còn tồn bao nhiêu thì tháng 10 phải nhận sang bấy nhiêu</td></tr>
+      <tr><td>04-van-ban</td><td>Công văn 1187, mẫu Biểu 01–02, mẫu báo cáo, công văn, biên bản</td><td>Luật chơi (cách tính) và khuôn để điền</td></tr>
+      <tr><td>05-hop</td><td>Ghi chú gõ vội buổi giao ban sáng 04/11</td><td>Viết biên bản; các câu trong đó khớp với chỗ lệch số liệu</td></tr>
+      <tr><td>98, 99 (chỉ có trong gói đáp án, tải riêng)</td><td>Biểu 01, Biểu 02 bản chuẩn; danh sách lỗi và số đúng</td><td>So và chấm <b>sau khi</b> làm xong</td></tr>
+    </tbody>
+  </table></div>
+  <p class="note">Hai "sợi dây" nối mọi file: <b>lĩnh vực</b> (Biểu 01 có 7 dòng, mỗi dòng một lĩnh vực) và <b>mã hồ sơ</b> (nối file Trung tâm với ảnh Zalo và Biểu 02).</p>
+
+  <h3>Quy trình làm báo cáo, và phần giao cho Claude</h3>
+  <ol class="steps">
+    <li>Nhận công văn của tỉnh. <span class="meta">→ Claude đọc và tóm tắt (chặng 5)</span></li>
+    <li>Gom file Trung tâm và báo cáo các phòng.</li>
+    <li>Làm sạch và đếm. <span class="meta">→ Claude (chặng 5)</span></li>
+    <li>Đối chiếu số giữa các nguồn. <span class="meta">→ Claude (chặng 6)</span></li>
+    <li>Lập biểu, viết báo cáo, công văn, biên bản. <span class="meta">→ Claude (chặng 7)</span></li>
+    <li>Trình ký, gửi tỉnh. <span class="meta">→ <b>bạn</b>. Quyết định và ký tên vẫn là việc của người.</span></li>
+  </ol>
+
+  <p><b>Kiểm thế nào:</b> bạn nói lại được bằng lời của mình: file nào là số chính thức, file nào chỉ để đối chiếu, file nào không được mở trước.</p>
+  <div class="ex">
+    <span class="h">Bài tập 1 · khoảng 10 phút</span>
+    <span class="lvl">Mức 1 · Làm theo mẫu</span>
+    <ol>
+      <li>Tải bộ file ở trên, giải nén vào một thư mục riêng.</li>
+      <li>Mở file <code>DOC-TRUOC.md</code> nằm ngay trong thư mục vừa giải nén (bằng Notepad cũng được).</li>
+      <li>Mở lướt từng thư mục 00–05, viết cho mỗi thư mục một câu: nó là gì, dùng để làm gì.</li>
+    </ol>
+    <p class="xong"><b>Xong khi:</b> bạn có 6 câu, mỗi thư mục một câu; và gói đáp án vẫn chưa mở, nằm ngoài thư mục làm việc.</p>
+    <label class="check"><input type="checkbox" data-ex-box="1"> Mình đã làm xong bài tập 1</label>
+  </div>
+</section>
+
+<!-- CHẶNG 2 -->
+<section class="stage" id="chang-2" data-ex="2">
+  <p class="tag">Chặng 2 · Hạt cam <span class="min">· ▶ <a class="t" data-t="0">--:--</a></span></p>
+  <h2>Muốn trồng cây cam, <em>phải có hạt cam</em></h2>
+  <p><b>Làm gì:</b> nắm 7 điều nền để dùng Claude Code cho đúng, và biết các nút quan trọng nằm ở đâu.</p>
+  <p><b>Vì sao:</b> bỏ qua chương này, bạn vẫn gõ được lệnh, nhưng sẽ gặp cảnh Claude quên điều đã dặn, làm sai hướng mà không biết dừng, hoặc tốn hết lượt dùng giữa chừng.</p>
+
+  <h3>1 · AI là người đọc rất nhiều, nhưng không biết việc của bạn</h3>
+  <p>Claude trả lời dựa trên những gì nó đã học. Nó <b>không biết</b> cơ quan bạn, lãnh đạo bạn, file của bạn, trừ khi bạn đưa. Và nó <b>có thể sai một cách rất tự tin</b>. Hai điều này sinh ra hai thói quen: đưa đủ thông tin, và luôn kiểm lại.</p>
+  <p class="meta"><span class="lv ok">Đã kiểm chứng</span> Anthropic khuyên kiểm kỹ câu trả lời cho việc quan trọng: <a href="https://support.claude.com/en/articles/8525154" target="_blank" rel="noopener">support.claude.com</a>, tra 16/11/2026.</p>
+
+  <h3>2 · Claude chat và Claude Code khác nhau thế nào</h3>
+  <table class="cmp">
+    <thead><tr><th></th><th>Claude chat</th><th>Claude Code</th></tr></thead>
+    <tbody>
+      <tr><td>Giống như</td><td>Gọi điện hỏi một chuyên gia</td><td>Mời chuyên gia ngồi vào máy bạn</td></tr>
+      <tr><td>Với file</td><td>Bạn chép, dán, rồi tự sửa</td><td>Nó tự mở, đọc, tạo, sửa file trong thư mục bạn cho phép</td></tr>
+      <tr><td>Đi kèm</td><td>—</td><td>Bạn phải biết cấp quyền và biết dừng nó (điều 6, 7)</td></tr>
+    </tbody>
+  </table>
+
+  <h3>3 · Mỗi cuộc trò chuyện là một cuốn sổ trắng</h3>
+  <p>Cuộc trò chuyện mới không nhớ hôm qua. Cuộc trò chuyện dài thì khi "sổ" gần đầy, Claude tự tóm tắt và có thể sót điều bạn dặn từ đầu. Vì vậy: <b>điều lâu dài thì ghi vào CLAUDE.md</b>, và <b>xong một việc thì mở cuộc trò chuyện mới</b> (nút New hoặc Ctrl + N). Sổ càng dài, mỗi câu càng tốn lượt dùng, vì Claude đọc lại cả sổ trước khi trả lời.</p>
+  <p>Ba lệnh cho cuộc trò chuyện dài:</p>
+  <div class="pr"><header><b>L01</b><span>Xem sổ đầy tới đâu</span><button class="copy" data-copy>Chép</button></header><pre>/context</pre></div>
+  <div class="pr"><header><b>L02</b><span>Tóm tắt để lấy lại chỗ, ghi rõ điều cần giữ</span><button class="copy" data-copy>Chép</button></header><pre>/compact Giữ lại: các quy tắc về số liệu, danh sách file đã sửa, việc còn dở</pre></div>
+  <div class="pr"><header><b>L03</b><span>Xem đã dùng bao nhiêu so với giới hạn gói</span><button class="copy" data-copy>Chép</button></header><pre>/usage</pre></div>
+  <p class="meta"><span class="lv ok">Đã kiểm chứng</span> nên mở cuộc trò chuyện mới khi đổi sang việc không liên quan; <code>/compact</code>, <code>/context</code>, <code>/usage</code>: <a href="https://code.claude.com/docs/en/costs" target="_blank" rel="noopener">Costs</a>, <a href="https://code.claude.com/docs/en/commands" target="_blank" rel="noopener">Commands</a>, tra 16/11/2026. <span class="lv no">Chưa xác minh</span> cả 3 lệnh hiện đủ trong thẻ Code của ứng dụng máy tính.</p>
+
+  <h3>4 · CLAUDE.md: thẻ căn cước và sổ bàn giao</h3>
+  <p>Giống như đưa cho cán bộ mới về hai thứ: <b>thẻ giới thiệu bạn</b> (đi theo bạn ở mọi việc) và <b>sổ bàn giao</b> của từng tập hồ sơ. Claude Code có đúng hai loại file đó:</p>
+  <ul class="list">
+    <li><b>CLAUDE.md cá nhân</b> ở <code>~/.claude/CLAUDE.md</code> (Windows: <code>C:\Users\[tên bạn]\.claude\CLAUDE.md</code>), dùng cho mọi thư mục. Làm ở chặng 3.</li>
+    <li><b>CLAUDE.md của thư mục</b>, nằm ngay trong thư mục làm việc. Làm ở chặng 4.</li>
+  </ul>
+  <div class="kn">
+    <span class="h">Kiến thức cần biết</span>
+    <ul>
+      <li>Claude đọc CLAUDE.md đầu mỗi cuộc trò chuyện. Đây là <b>lời dặn</b>, Claude cố làm theo, không phải ổ khoá. Việc quan trọng vẫn phải kiểm.</li>
+      <li>Anthropic khuyên mỗi file <b>dưới 200 dòng</b>: file dài tốn chỗ và Claude làm theo kém đi. Mình giữ dưới 50 dòng.</li>
+      <li>Claude đọc cả CLAUDE.md của <b>thư mục cha</b>. Vì vậy đừng đặt thư mục làm việc bên trong một thư mục đã có CLAUDE.md của việc khác.</li>
+    </ul>
+    <p class="src"><span class="lv ok">Đã kiểm chứng</span> <a href="https://code.claude.com/docs/en/memory" target="_blank" rel="noopener">Memory</a>, tra 16/11/2026.</p>
+  </div>
+
+  <h3>5 · Giao việc theo công thức bốn ý</h3>
+  <p><b>Mục tiêu</b> (muốn ra cái gì) · <b>Đầu vào</b> (dùng file nào) · <b>Đầu ra</b> (nhận lại dạng gì) · <b>Cách kiểm</b> (làm sao biết là đúng). Và gần như luôn thêm: <i>chỗ nào không chắc thì hỏi tôi</i>, để Claude bớt tự đoán.</p>
+  <div class="pr"><header><b>V01</b><span>Câu kém</span><button class="copy" data-copy>Chép</button></header><pre>Làm báo cáo thủ tục hành chính tháng 10 giúp tôi.</pre></div>
+  <div class="pr"><header><b>V02</b><span>Câu tốt, đủ bốn ý</span><button class="copy" data-copy>Chép</button></header><pre>Mục tiêu: lập Biểu 01 tháng 10 gửi tỉnh. Đầu vào: file xuất của Trung tâm trong thư mục 01, cách tính trong công văn 1187. Đầu ra: file Excel theo mẫu Biểu 01 và danh sách những chỗ bạn đã xử lý. Cách kiểm: tổng tiếp nhận phải bằng đã giải quyết cộng đang giải quyết cộng rút hoặc từ chối; chỗ nào không chắc thì hỏi tôi, không tự sửa.</pre></div>
+  <p>Tự ghép câu bốn ý cho việc của bạn (chữ bạn gõ chỉ nằm trên trình duyệt của bạn):</p>
+  <div class="form two" id="f4">
+    <label>Mục tiêu<textarea data-k="Mục tiêu" placeholder="Tổng hợp danh sách hồ sơ quá hạn tuần này"></textarea></label>
+    <label>Đầu vào<textarea data-k="Đầu vào" placeholder="File xuất trong thư mục 01"></textarea></label>
+    <label>Đầu ra<textarea data-k="Đầu ra" placeholder="Một file Excel chia theo phòng"></textarea></label>
+    <label>Cách kiểm<textarea data-k="Cách kiểm" placeholder="Số dòng mỗi phòng cộng lại bằng tổng"></textarea></label>
+  </div>
+  <div class="pr"><header><b>F01</b><span>Câu bạn vừa ghép</span><button class="copy" data-copy>Chép</button></header><pre id="f4-out">Điền bốn ô ở trên…</pre></div>
+
+  <div class="kn">
+    <span class="h">Điều 6, 7 và 8 · Các nút cần biết trong thẻ Code</span>
+    <ul>
+      <li><b>Lên kế hoạch trước (Plan):</b> ở hàng nút ngay <b>dưới ô gõ chữ</b> có nút chọn chế độ. Chọn <b>Plan</b>: Claude chỉ đọc và viết kế hoạch, chưa sửa file nào tới khi bạn đồng ý. Đọc kế hoạch mất một phút, tránh được một giờ sửa sai.</li>
+      <li><b>Quyền hạn:</b> cùng nút đó có <b>Manual</b> (việc gì cũng hỏi trước), <b>Accept edits</b> (sửa file không hỏi), <b>Plan</b>, và có máy thấy <b>Auto</b>. Người mới nên để <b>Manual</b> và đọc ô xin phép trước khi đồng ý. Mục <b>Changes</b> ở phía trên cho xem lại mọi file đã sửa. Ở bản chạy trong cửa sổ lệnh thì bấm Shift + Tab để đổi chế độ.</li>
+      <li><b>Phanh:</b> khi Claude đang chạy, bấm nút dừng ở ô gõ chữ hoặc phím <b>Esc</b>.</li>
+      <li><b>Trang mới:</b> nút <b>New</b> ở thanh bên trái hoặc Ctrl + N; cuộc trò chuyện cũ vẫn còn trong danh sách.</li>
+      <li><b>Tua lại:</b> ở bản cửa sổ lệnh, gõ <code>/rewind</code> hoặc bấm Esc hai lần khi ô gõ trống, rồi chọn khôi phục file, cuộc trò chuyện, hoặc cả hai. Chỉ chắc chắn với sửa đổi do chính Claude làm bằng công cụ sửa file. Nút quay lại chắc nhất: <b>luôn làm trên bản sao</b>.</li>
+    </ul>
+    <p class="src"><span class="lv ok">Đã kiểm chứng</span> <a href="https://code.claude.com/docs/en/desktop" target="_blank" rel="noopener">Desktop</a>, <a href="https://code.claude.com/docs/en/permission-modes" target="_blank" rel="noopener">Permission modes</a>, <a href="https://code.claude.com/docs/en/checkpointing" target="_blank" rel="noopener">Checkpointing</a>, tra 16/11/2026. <span class="lv no">Chưa xác minh</span> thẻ Code của ứng dụng có nút tua lại hay không: tài liệu chưa ghi. Tên nút trên máy bạn có thể là tiếng Anh hoặc khác đôi chút.</p>
+  </div>
+  <p>Ba từ sẽ gặp ở nửa sau: <b>skill</b> là cuốn sổ quy trình; <b>kết nối (MCP)</b> là ổ cắm để Claude dùng công cụ khác như email, lịch; <b>hẹn giờ</b> là đồng hồ báo thức để Claude tự chạy việc.</p>
+  <blockquote class="quote"><p>Đưa đủ thông tin. Ghi điều lâu dài vào CLAUDE.md. Giao việc bốn ý. Lên kế hoạch trước. Cấp quyền vừa đủ. Biết dừng. Luôn kiểm lại.</p></blockquote>
+
+  <p><b>Kiểm thế nào:</b> nhìn vào thẻ Code, bạn chỉ ra được nút chọn chế độ, nút New và mục Changes.</p>
+  <div class="ex">
+    <span class="h">Bài tập 2 · khoảng 10 phút</span>
+    <span class="lvl">Mức 1 · Làm theo mẫu</span>
+    <ol>
+      <li>Chọn một việc bạn hay làm ở cơ quan.</li>
+      <li>Điền form bốn ý ở trên cho việc đó.</li>
+      <li>Đọc lại: có câu "chỗ nào không chắc thì hỏi tôi" chưa?</li>
+    </ol>
+    <p class="xong"><b>Xong khi:</b> câu giao việc có đủ 4 ý, và phần cách kiểm là thứ đếm được hoặc nhìn thấy được.</p>
+    <label class="check"><input type="checkbox" data-ex-box="2"> Mình đã làm xong bài tập 2</label>
+  </div>
+</section>
+
+<!-- CHẶNG 3 -->
+<section class="stage" id="chang-3" data-ex="3">
+  <p class="tag">Chặng 3 · Chuẩn bị <span class="min">· ▶ <a class="t" data-t="0">--:--</a></span></p>
+  <h2>Gói, cài đặt, và <em>tấm thẻ căn cước</em></h2>
+  <p><b>Làm gì:</b> có gói phù hợp, cài app, tắt chế độ dùng dữ liệu để huấn luyện, tạo CLAUDE.md cá nhân, và chuẩn bị thư mục làm việc.</p>
+  <p><b>Vì sao:</b> làm một lần ở đây thì các chặng sau trơn tru. Đặc biệt bước thư mục: làm thẳng trên file gốc là cách nhanh nhất để mất dữ liệu.</p>
+
+  <h3>Bước 1 · Gói</h3>
+  <p>Claude Code không có trong gói miễn phí. Gói thấp nhất có Claude Code là <b>Pro</b>, khoảng 20 đô một tháng (rẻ hơn nếu trả theo năm). Gói Pro giới hạn lượt dùng theo từng khoảng 5 giờ và theo tuần; chat và Claude Code tính chung. Giá ở Việt Nam có thể khác do thuế, xem trang giá trước khi trả.</p>
+  <p class="meta"><span class="lv ok">Đã kiểm chứng</span> <a href="https://claude.com/pricing" target="_blank" rel="noopener">claude.com/pricing</a>, tra 16/11/2026. <span class="lv no">Chưa xác minh</span> con số giới hạn cụ thể: Anthropic không công bố.</p>
+  <p class="note">Lần mình chạy thử chặng 5–7 tốn khoảng 16 phút và khoảng 220 nghìn token. Với gói Pro, bạn nên chia ra nhiều buổi, mỗi buổi 1–2 chặng.</p>
+
+  <h3>Bước 2 · Cài</h3>
+  <ol class="steps">
+    <li>Cách dễ nhất: tải ứng dụng Claude cho Windows ở <a href="https://claude.com/download" target="_blank" rel="noopener">claude.com/download</a>, đăng nhập, bấm thẻ <b>Code</b>. Không cần mở cửa sổ lệnh. <b>Không chắc thì chọn cách này.</b></li>
+    <li>Cách thứ hai (bản cửa sổ lệnh): mở PowerShell, chạy lệnh dưới đây. Không cần quyền quản trị. Máy cơ quan khoá cài đặt thì hỏi bộ phận IT trước.</li>
+  </ol>
+  <div class="pr"><header><b>C01</b><span>Cài bằng PowerShell (không bắt buộc)</span><button class="copy" data-copy>Chép</button></header><pre>irm https://claude.ai/install.ps1 | iex</pre></div>
+  <p class="meta"><span class="lv ok">Đã kiểm chứng</span> <a href="https://code.claude.com/docs/en/setup" target="_blank" rel="noopener">Setup</a>, <a href="https://code.claude.com/docs/en/desktop-quickstart" target="_blank" rel="noopener">Desktop quickstart</a>, tra 16/11/2026. <span class="lv no">Chưa xác minh</span> để đọc file Excel, Claude thường chạy một chương trình nhỏ (hay là Python). Máy mới có thể chưa có. Nếu Claude xin cài, đọc xem nó định cài gì, từ đâu; máy cơ quan thì hỏi bộ phận IT trước khi đồng ý.</p>
+
+  <h3>Bước 3 · Tắt chế độ dùng dữ liệu để huấn luyện</h3>
+  <ol class="steps">
+    <li>Bấm vào tên bạn → <b>Settings</b> (Cài đặt) → <b>Privacy</b> (Quyền riêng tư).</li>
+    <li>Tìm nút <b>"Help improve our AI models"</b> và tắt.</li>
+  </ol>
+  <div class="kn">
+    <span class="h">Kiến thức cần biết</span>
+    <ul>
+      <li>Áp dụng cho tài khoản cá nhân Free, Pro, Max, gồm cả các phiên Claude Code.</li>
+      <li>Tắt: cuộc trò chuyện mới không dùng để huấn luyện, dữ liệu giữ 30 ngày. Bật: có thể giữ tới 5 năm.</li>
+      <li>Những gì đã dùng để huấn luyện trước đó không rút lại được. Nội dung bị đánh dấu vi phạm an toàn vẫn có thể dùng cho kiểm duyệt.</li>
+      <li>Gói Team, Enterprise (tài khoản do cơ quan mua) theo quy định khác: hỏi người quản trị.</li>
+    </ul>
+    <p class="src"><span class="lv ok">Đã kiểm chứng</span> <a href="https://privacy.claude.com/en/articles/12109829" target="_blank" rel="noopener">privacy.claude.com</a>, <a href="https://www.anthropic.com/news/updates-to-our-consumer-terms" target="_blank" rel="noopener">thông báo 28/8/2025</a>, tra 16/11/2026.</p>
+  </div>
+
+  <h3>Bước 4 · CLAUDE.md cá nhân (chỉ khi dùng tài khoản và máy riêng)</h3>
+  <p><b>Vì sao chỉ khi dùng riêng:</b> file này nằm trong máy và mô tả <b>con người bạn</b>. Dùng chung tài khoản hay chung máy thì người khác cũng "mang" thẻ của bạn. Thẻ căn cước thì chỉ chủ thẻ được dùng. Dùng chung thì bỏ qua bước này.</p>
+  <div class="pr"><header><b>P01</b><span>Claude hỏi từng câu rồi viết CLAUDE.md cá nhân</span><button class="copy" data-copy>Chép</button></header>
+<pre>Tôi muốn tạo file CLAUDE.md cá nhân ở thư mục người dùng (~/.claude/CLAUDE.md), dùng cho mọi dự án.
+Hãy hỏi tôi lần lượt, mỗi lần MỘT câu, chờ tôi trả lời rồi mới hỏi câu tiếp:
+1. Tôi tên gì, muốn được gọi thế nào, trả lời bằng ngôn ngữ nào.
+2. Tôi làm nghề gì, trình độ dùng máy tính và AI của tôi.
+3. Tôi thích câu trả lời thế nào (ngắn hay dài, kết luận trước hay sau, có ví dụ không).
+4. Những việc bạn phải hỏi tôi trước khi làm (ví dụ: xoá file, ghi đè, gửi ra ngoài, tốn tiền).
+Hỏi xong, viết file theo các quy tắc sau:
+- Chỉ ghi điều tôi đã nói, không tự thêm.
+- Dưới 50 dòng. Anthropic khuyên mỗi file CLAUDE.md nên dưới 200 dòng; tôi muốn gọn hơn.
+- Thêm vào cuối file đúng 2 quy tắc này:
+  • Điều gì tôi nhắc bạn từ lần thứ 2 trở đi, bạn tự ghi vào file này, rồi báo tôi đã ghi dòng nào.
+  • Nếu file sắp dài quá 50 dòng, dừng lại, đề xuất những dòng nên bỏ hoặc gộp, và chờ tôi đồng ý.
+Cho tôi xem bản nháp trước khi lưu.</pre></div>
+  <p class="meta"><span class="lv no">Chưa xác minh</span> "tự ghi khi nhắc lần 2" không phải tính năng có sẵn, mà là quy tắc mình tự đặt trong file; Claude thường làm theo nhưng không phải lúc nào cũng đúng. Thỉnh thoảng mở file ra xem nó đã ghi gì.</p>
+
+  <h3>Bước 5 · Thư mục làm việc</h3>
+  <ol class="steps">
+    <li>Tạo một thư mục riêng, ví dụ <code>D:\thu-claude-code\bao-cao-tthc-thang-10</code>, giải nén bộ file vào đó. Gói đáp án để chỗ khác.</li>
+    <li>Thư mục này <b>không nằm trong</b> thư mục nào đã có CLAUDE.md của việc khác.</li>
+    <li>Trong thẻ Code, chọn thư mục vừa tạo.</li>
+  </ol>
+  <p>Với dữ liệu thật ở cơ quan, nhớ bốn điều: không đưa văn bản mật; làm đúng quy định của đơn vị về phần mềm bên ngoài; không đưa thông tin cá nhân của người dân khi không cần; luôn làm trên bản sao.</p>
+
+  <p><b>Kiểm thế nào</b> (nếu đã làm bước 4): mở cuộc trò chuyện mới, hỏi "Tôi là ai và bạn phải hỏi tôi trước khi làm gì?". Claude gọi đúng tên và kể lại đúng quy tắc.</p>
+  <div class="ex">
+    <span class="h">Bài tập 3 · khoảng 20 phút</span>
+    <span class="lvl">Mức 1 · Làm theo mẫu</span>
+    <ol>
+      <li>Tắt nút "Help improve our AI models".</li>
+      <li>Nếu dùng máy và tài khoản riêng: chạy P01, trả lời từng câu, đọc bản nháp rồi mới đồng ý lưu.</li>
+      <li>Tạo thư mục làm việc, giải nén bộ file, chọn thư mục đó trong thẻ Code.</li>
+    </ol>
+    <p class="xong"><b>Xong khi:</b> nút đã tắt; thư mục làm việc đã chọn trong thẻ Code và không chứa gói đáp án. Nếu dùng máy riêng: cuộc trò chuyện mới gọi đúng tên bạn, file CLAUDE.md dưới 50 dòng.</p>
+    <label class="check"><input type="checkbox" data-ex-box="3"> Mình đã làm xong bài tập 3</label>
+  </div>
+</section>
+
+<!-- CHẶNG 4 -->
+<section class="stage" id="chang-4" data-ex="4">
+  <p class="tag">Chặng 4 · Sổ bàn giao <span class="min">· ▶ <a class="t" data-t="0">--:--</a></span></p>
+  <h2>Cuốn sổ bàn giao <em>của thư mục</em></h2>
+  <p><b>Làm gì:</b> để Claude phỏng vấn bạn rồi viết CLAUDE.md cho thư mục báo cáo.</p>
+  <p><b>Vì sao:</b> thẻ căn cước nói bạn là ai; cuốn sổ này nói việc ở đây là gì và quy tắc riêng của việc này. Không có nó, mỗi cuộc trò chuyện mới bạn phải dặn lại "tính theo ngày trả", "không ghi tên người dân"… và chỉ cần quên một lần là báo cáo sai. Người dùng chung máy cũng làm được bước này, vì nó chỉ nói về công việc.</p>
+  <div class="pr"><header><b>P02</b><span>Claude phỏng vấn rồi viết CLAUDE.md cho thư mục</span><button class="copy" data-copy>Chép</button></header>
+<pre>Tôi muốn tạo file CLAUDE.md cho thư mục này (sổ bàn giao của việc ở đây).
+Trước tiên, hãy xem nhanh các thư mục con để biết ở đây có gì, nhưng chưa sửa gì.
+Sau đó hỏi tôi lần lượt, mỗi lần MỘT câu:
+1. Việc ở thư mục này là gì, làm định kỳ thế nào.
+2. Mẫu và cách tính chuẩn (ví dụ: biểu mẫu nào, công văn nào quy định cách tính).
+3. Quy tắc khi gặp số liệu không chắc, ô trống, file sai.
+4. Điều tuyệt đối không được làm.
+Viết file dưới 30 dòng, chỉ ghi điều tôi nói. Không chép lại thông tin cá nhân đã có trong CLAUDE.md cá nhân.
+Cho tôi xem bản nháp trước khi lưu.</pre></div>
+  <p>Claude sẽ hỏi 4 câu. Nếu chưa biết trả lời gì, dùng câu trả lời của chị Hà:</p>
+  <ol class="steps">
+    <li><i>Việc ở đây:</i> báo cáo kết quả giải quyết thủ tục hành chính hằng tháng của xã gửi tỉnh, theo Biểu 01 và Biểu 02.</li>
+    <li><i>Mẫu và cách tính:</i> mẫu trong 04-van-ban; cách tính theo Công văn 1187; đã giải quyết tính theo ngày trả cho dân, không theo ngày ký.</li>
+    <li><i>Khi số không chắc:</i> hỏi tôi; số giữa các phòng mà chênh với hệ thống thì nêu nguyên nhân, không tự sửa cho khớp.</li>
+    <li><i>Tuyệt đối không:</i> ghi họ tên, số điện thoại người dân vào file kết quả; sửa file gốc (kết quả lưu vào thư mục ket-qua).</li>
+  </ol>
+  <p>Đây là file mình dùng khi chạy thử, bạn có thể so. Thư mục <code>ket-qua</code> không cần tạo trước, Claude tự tạo khi lưu.</p>
+  <div class="pr"><header><b>M01</b><span>CLAUDE.md của thư mục, bản của chị Hà</span><button class="copy ghost" data-dl="CLAUDE.md">Tải</button><button class="copy" data-copy>Chép</button></header>
+<pre># Thư mục: báo cáo thủ tục hành chính hằng tháng
+
+## Việc ở đây
+- Báo cáo kết quả giải quyết thủ tục hành chính (TTHC) hằng tháng của xã Phong Thạnh gửi tỉnh, theo Biểu 01 và Biểu 02 (mẫu trong 04-van-ban, cách tính theo Công văn 1187).
+- Người làm: chị Hà, chuyên viên Văn phòng HĐND và UBND xã.
+
+## Quy tắc
+- Số liệu lấy theo hệ thống của Trung tâm Phục vụ hành chính công (thư mục 01).
+- "Đã giải quyết" tính theo ngày trả kết quả cho dân, không theo ngày ký.
+- Số giữa các phòng mà chênh với hệ thống thì phải nêu nguyên nhân, không tự sửa cho khớp.
+- Không ghi họ tên, số điện thoại người dân vào bất kỳ file kết quả nào.
+- Số nào không chắc thì hỏi. Không sửa file gốc; kết quả lưu vào thư mục ket-qua.</pre></div>
+  <p class="meta"><span class="lv run">Đã chạy thử</span> file M01 được dùng trong lần chạy thử ngày 16/11/2026. <span class="lv no">Chưa xác minh</span> câu P02 chưa chạy trong ứng dụng.</p>
+  <p><b>Kiểm thế nào:</b> mở cuộc trò chuyện mới trong thư mục này, hỏi "Đã giải quyết tính theo ngày nào?". Claude phải trả lời "ngày trả cho dân".</p>
+  <div class="ex">
+    <span class="h">Bài tập 4 · khoảng 15 phút</span>
+    <span class="lvl">Mức 1 · Làm theo mẫu</span>
+    <ol>
+      <li>Chạy P02 trong thư mục làm việc, trả lời như chị Hà.</li>
+      <li>So bản nháp với M01, thiếu quy tắc nào thì nói Claude thêm.</li>
+      <li>Mở cuộc trò chuyện mới, hỏi câu ở phần "Kiểm thế nào".</li>
+    </ol>
+    <p class="xong"><b>Xong khi:</b> file dưới 30 dòng và có đủ 4 quy tắc: tính theo ngày trả; chênh lệch phải nêu nguyên nhân; không ghi tên, số điện thoại người dân; không sửa file gốc.</p>
+    <label class="check"><input type="checkbox" data-ex-box="4"> Mình đã làm xong bài tập 4</label>
+  </div>
+</section>
+
+<!-- CHẶNG 5 -->
+<section class="stage" id="chang-5" data-ex="5">
+  <p class="tag">Chặng 5 · Làm sạch <span class="min">· ▶ <a class="t" data-t="0">--:--</a></span></p>
+  <h2>Đọc đề, khám, rồi mới <em>làm sạch 6.002 dòng</em></h2>
+  <p><b>Làm gì:</b> theo đúng thứ tự: đọc công văn → khám file → lên kế hoạch → cho làm và đọc nhật ký → có Biểu 01.</p>
+  <p><b>Vì sao theo thứ tự này:</b> hiểu đề sai thì làm càng nhanh, sai càng nhanh. Khám trước để thấy hết lỗi rồi mới chữa, tránh sửa sót. Lên kế hoạch trước để bạn bắt được chỗ Claude hiểu sai cách tính, trước khi nó sửa gì.</p>
+  <p class="note"><span class="lv run">Đã chạy thử</span> các câu lệnh chặng 5–7 đã chạy ngày 16/11/2026 với đúng bộ file này, bằng một phiên Claude không biết đáp án: Biểu 01 khớp đáp án từng ô. Sau đó mình sửa thêm vài chỗ cho rõ (ghi ở từng câu); bản đã sửa chưa chạy lại.</p>
+
+  <h3>Bước 1 · Đọc đề</h3>
+  <div class="pr"><header><b>P03</b><span>Đọc công văn và bảng phân công</span><button class="copy" data-copy>Chép</button></header>
+<pre>Đọc công văn trong thư mục 04-van-ban và bảng phân công trong thư mục 00. Chưa mở file dữ liệu, chưa làm gì khác.
+Tóm tắt cho tôi:
+- Tỉnh yêu cầu nộp những gì, theo mẫu nào, hạn khi nào.
+- Cách tính từng chỉ tiêu: kỳ trước chuyển sang, đã giải quyết, trước hạn / đúng hạn / quá hạn, đang giải quyết, rút hoặc từ chối. Mỗi chỉ tiêu một dòng, kèm một ví dụ dễ hiểu.
+- 7 lĩnh vực và phòng phụ trách từng lĩnh vực.
+- Những chỗ trong công văn dễ hiểu sai.</pre></div>
+  <p class="meta"><span class="lv no">Chưa xác minh</span> câu này thêm sau lần chạy thử.</p>
+  <p>Đặt bản tóm tắt cạnh công văn gốc. Ba câu cần thuộc, vì chặng 6 sẽ dùng:</p>
+  <ul class="list">
+    <li><b>Đã giải quyết tính theo ngày TRẢ cho dân</b>, không theo ngày ký. Ký 31/10 mà 03/11 dân mới nhận thì không tính vào tháng 10.</li>
+    <li><b>Kỳ trước chuyển sang</b>: hồ sơ nhận trước 01/10, đến hết 30/9 chưa trả.</li>
+    <li><b>Số hệ thống và số của các phòng chênh nhau</b> thì phải nêu nguyên nhân.</li>
+  </ul>
+
+  <h3>Bước 2 · Khám sức khoẻ file</h3>
+  <div class="pr"><header><b>P04</b><span>Phiếu khám, chưa sửa gì</span><button class="copy" data-copy>Chép</button></header>
+<pre>Đọc file Excel trong thư mục 01-du-lieu-trung-tam. Chưa tính báo cáo, chưa sửa gì.
+Hãy cho tôi một "phiếu khám" của file:
+- Có bao nhiêu dòng dữ liệu thật, bao nhiêu cột, mỗi cột chứa gì.
+- Có dòng nào không thuộc xã Phong Thạnh không, có mã hồ sơ nào bị trùng không.
+- Các cột ngày đang ghi theo những kiểu nào, đếm mỗi kiểu bao nhiêu dòng.
+- Cột Lĩnh vực có bao nhiêu cách viết khác nhau, so với danh mục trong thư mục 00.
+- Có hồ sơ nào "Đã trả kết quả" mà trống ngày trả, hoặc ngày trả trước ngày nhận không.
+- Dòng "Tổng cộng" cuối file có khớp với số dòng thật không.
+Trình bày thành bảng ngắn.</pre></div>
+  <p><b>Bài học đầu tiên:</b> đừng tin dòng "Tổng cộng" có sẵn trong file xuất.</p>
+
+  <h3>Bước 3 · Lên kế hoạch (chế độ Plan)</h3>
+  <p>Chọn <b>Plan</b> ở nút chọn chế độ, rồi gửi:</p>
+  <div class="pr"><header><b>P05</b><span>Kế hoạch làm sạch và lập Biểu 01</span><button class="copy" data-copy>Chép</button></header>
+<pre>Mục tiêu: lập Biểu 01 tháng 10/2026 theo mẫu trong 04-van-ban, đúng cách tính trong Công văn 1187 của tỉnh.
+Đầu vào: file Trung tâm (thư mục 01), danh mục lĩnh vực (thư mục 00).
+Làm sạch trước: bỏ hồ sơ xã khác, bỏ dòng trùng, đưa ngày về một kiểu (dòng nào ghi kiểu Mỹ thì đọc CẢ DÒNG theo kiểu Mỹ), chuẩn hoá tên lĩnh vực theo danh mục.
+Hồ sơ "Đã trả" mà trống ngày trả hoặc ngày trả trước ngày nhận: không xếp trước/đúng/quá hạn, để riêng một cột "chưa rõ hạn" và liệt kê cho tôi.
+Hồ sơ "Chờ bổ sung" tính vào đang giải quyết.
+Đầu ra: file "Bieu01 T10" gồm trang Biểu 01, trang nhật ký xử lý (đã làm gì, bao nhiêu dòng, vì sao), trang cần xác nhận.
+Cách kiểm: với mỗi lĩnh vực, tiếp nhận = đã giải quyết + đang giải quyết + rút/từ chối + chưa rõ hạn. Dòng tổng dùng công thức SUM.
+Không ghi tên, số điện thoại người dân vào file kết quả. Chỗ nào không chắc thì hỏi tôi.</pre></div>
+  <p class="meta">Sau lần chạy thử, mình thêm dòng "Chờ bổ sung" và đổi "ngày trả sai" thành "ngày trả trước ngày nhận", vì đó là hai chỗ Claude phải tự đoán.</p>
+  <p><b>Đọc kế hoạch trước khi đồng ý:</b> nó có hiểu đúng "kỳ trước chuyển sang" không? Có định đọc cả dòng kiểu Mỹ không? Thiếu gì thì nói thêm. Thấy ổn thì bấm nút chấp nhận kế hoạch Claude hiện ra (hoặc gõ "Đồng ý, làm đi") để nó bắt đầu làm.</p>
+
+  <figure class="anim" data-anim="4">
+    <div class="ah"><span>Hình minh hoạ · Bẫy ngày kiểu Mỹ</span><button class="replay" type="button">↺ Xem lại</button></div>
+    <div class="sb flow" aria-hidden="true">
+      <div class="drow" data-s="1"><div class="d1">10/15/2026<small>ngày nhận</small></div><div class="d2">10/20/2026<small>ngày hẹn</small></div><div class="d3"><span class="bad">11/02/2026</span><small>ngày trả</small></div></div>
+      <p class="flag" data-s="2">Không có tháng 15 → <b>dòng này ghi kiểu Mỹ</b> (tháng trước, ngày sau)</p>
+      <p class="flag" data-s="3">Đọc kiểu Việt, ô cuối là 11 tháng 2. <b>Sai</b>: trả trước cả ngày nhận.</p>
+      <p class="res" data-s="4">Đọc cả dòng kiểu Mỹ → trả ngày <b>02/11</b><em>đúng</em></p>
+    </div>
+    <ol class="caps"><li>Một dòng có ba ô ngày.</li><li>Ô đầu có "tháng" 15, nên chắc chắn dòng này ghi kiểu Mỹ.</li><li>Ô cuối "11/02" đọc kiểu Việt thì vô lý.</li><li>Đọc cả dòng cùng một kiểu thì mới ra đúng.</li></ol>
+    <p class="note" style="margin:.5rem 0 0">Dòng minh hoạ đúng kiểu bẫy trong bộ file (12 dòng ghi kiểu Mỹ); ngày cụ thể ở đây là ví dụ.</p>
+  </figure>
+
+  <h3>Bước 4 · Cho làm, đọc nhật ký</h3>
+  <p>Đồng ý kế hoạch. Trong lúc chạy, Claude sẽ xin phép trước khi chạy công cụ: đọc rồi mới đồng ý. Khi xong, mở file kết quả, đọc <b>trang nhật ký</b> (đã bỏ gì, đổi gì, vì sao) và <b>trang cần xác nhận</b> (những hồ sơ nó không dám tự xếp).</p>
+  <figure class="anim" data-anim="4">
+    <div class="ah"><span>Hình minh hoạ · 6.002 dòng còn bao nhiêu</span><button class="replay" type="button">↺ Xem lại</button></div>
+    <div class="sb flow" aria-hidden="true">
+      <div class="funnel">
+        <div class="fr" data-s="1"><span class="bb" style="width:60%"></span><span><b>6.002</b> dòng trong file</span></div>
+        <div class="fr" data-s="2"><span class="bb g" style="width:6%"></span><span>bỏ <b>40</b> hồ sơ xã khác, <b>25</b> dòng trùng</span></div>
+        <div class="fr" data-s="3"><span class="bb" style="width:59%"></span><span><b>5.937</b> hồ sơ của xã (tháng 9 và 10)</span></div>
+        <div class="fr" data-s="4"><span class="bb k" style="width:33%"></span><span><b>3.321</b> hồ sơ thuộc kỳ báo cáo tháng 10</span></div>
+      </div>
+    </div>
+    <ol class="caps"><li>File xuất có 6.002 dòng (dòng tổng cuối file ghi 6.039, sai).</li><li>Lọc bỏ hồ sơ lẫn từ xã khác và dòng xuất hai lần.</li><li>Còn hồ sơ thật của xã, gồm cả tháng 9 và tháng 10.</li><li>Biểu 01 tháng 10 gồm hồ sơ mới tháng 10 và hồ sơ tháng 9 còn tồn.</li></ol>
+    <p class="note" style="margin:.5rem 0 0">Số từ bộ file mẫu (giả lập) và đáp án của nó.</p>
+  </figure>
+
+  <p><b>Kiểm thế nào:</b> file Biểu 01 nằm trong thư mục <code>ket-qua</code>; nhật ký ghi rõ số dòng bị bỏ và lý do; cột "chưa rõ hạn" có danh sách hồ sơ; ô tổng là công thức <code>=SUM</code>. Chặng 6 sẽ kiểm kỹ hơn.</p>
+  <div class="ex">
+    <span class="h">Bài tập 5 · khoảng 40 phút</span>
+    <span class="lvl">Mức 2 · Có gợi ý</span>
+    <ol>
+      <li>Làm đủ 4 bước ở trên với bộ file mẫu.</li>
+      <li>Tự viết thêm <b>một câu hỏi</b> bắt Claude chỉ ra bằng chứng cho bẫy ngày kiểu Mỹ: dòng nào, đọc ra ngày nào.</li>
+    </ol>
+    <details><summary>Gợi ý nếu bí</summary><p>Câu hỏi cần nói: lấy những dòng nào (dòng ghi kiểu Mỹ), cho xem gì (mã hồ sơ, ngày gốc, ngày đã đổi), và kiểm gì (có dòng nào ngày trả trước ngày nhận sau khi đổi không).</p></details>
+    <p class="xong"><b>Xong khi:</b> có file Biểu 01 với 3 trang (Biểu 01, nhật ký, cần xác nhận); phiếu khám nêu được dòng tổng sai, hồ sơ xã khác, dòng trùng, ngày nhiều kiểu; và bạn thấy tận mắt dòng có ngày trả đầu tháng 11.</p>
+    <label class="check"><input type="checkbox" data-ex-box="5"> Mình đã làm xong bài tập 5</label>
+  </div>
+  <details class="ans"><summary>Đáp án để so (mở sau khi làm xong)</summary>
+    <p>Phiếu khám: 6.002 dòng thật (dòng tổng ghi 6.039) · 40 hồ sơ xã khác · 25 dòng trùng · ngày ghi 4 kiểu, 12 dòng kiểu Mỹ · 12 hồ sơ "đã trả" trống ngày trả, 5 hồ sơ ngày trả năm 2025.</p>
+    <p>Biểu 01 dòng tổng: tiếp nhận <b>3.321</b> (kỳ trước 230; mới trực tuyến 588, trực tiếp 2.441, bưu chính 62) · đã giải quyết <b>3.035</b> (trước hạn 502, đúng hạn 2.481, quá hạn 52) · đang giải quyết 233 (trong hạn 193, quá hạn 40) · rút/từ chối 36 · chưa rõ hạn 17 · tỷ lệ trước hạn và đúng hạn 98,29% (trên số đã giải quyết).</p>
+    <p class="note">Nguồn: đáp án của bộ file giả lập, đã kiểm lại bằng một chương trình riêng đọc file bẩn và tự tính.</p>
+  </details>
+</section>
+
+<!-- CHẶNG 6 -->
+<section class="stage" id="chang-6" data-ex="6">
+  <p class="tag">Chặng 6 · Kiểm số <span class="min">· ▶ <a class="t" data-t="0">--:--</a></span></p>
+  <h2>Đừng tin, <em>hãy kiểm</em></h2>
+  <p><b>Làm gì:</b> kiểm Biểu 01 bằng ba lớp, rồi đối chiếu với ba nguồn số liệu khác.</p>
+  <p><b>Vì sao:</b> Claude có thể sai một cách rất tự tin. Và trong đời thật, số của bạn sẽ lệch với số của phòng khác; báo cáo tốt là báo cáo <b>giải thích được vì sao lệch</b>, không phải ép số cho khớp.</p>
+
+  <h3>Ba lớp kiểm, mỗi lớp kiểm một thứ</h3>
+  <table class="cmp">
+    <thead><tr><th>Lớp</th><th>Kiểm cái gì</th><th>Không kiểm được gì</th></tr></thead>
+    <tbody>
+      <tr><td>📝 Đề có đáp án</td><td>Lọc, đếm có đúng không. Bộ file tạo đúng trước rồi mới làm bẩn, nên có số chuẩn để so.</td><td>Chỉ có ở bộ file tập luyện; việc thật không có sẵn đáp án.</td></tr>
+      <tr><td>🧮 Công thức Excel</td><td>Phép cộng: Excel tự cộng, không qua AI.</td><td>Nếu Claude lọc sai, Excel vẫn cộng đều.</td></tr>
+      <tr><td>👤 Người kiểm</td><td>Một người thật, không dùng AI, soát bằng tay.</td><td>Tốn thời gian, nên chỉ soát vài điểm chính.</td></tr>
+    </tbody>
+  </table>
+  <p>Lời khuyên: lần đầu dùng cho việc thật, <b>làm song song</b> một bản tay và một bản Claude, so với nhau. Khi đã tin, mới bỏ bản tay.</p>
+
+  <h3>Bước 1 · Cột kiểm bằng công thức</h3>
+  <div class="pr"><header><b>P06</b><span>Thêm cột kiểm</span><button class="copy" data-copy>Chép</button></header>
+<pre>Trong file Bieu01 T10, thêm một cột kiểm cho mỗi lĩnh vực: tiếp nhận trừ (đã giải quyết + đang giải quyết + rút/từ chối + chưa rõ hạn) phải bằng 0. Dùng công thức để tôi bấm vào ô là thấy.</pre></div>
+  <p>Mở file bằng <b>Excel</b>, bấm vào ô tổng thấy <code>=SUM(...)</code>, bấm cột kiểm thấy toàn số 0.</p>
+  <p class="meta"><span class="lv run">Đã chạy thử</span> Lưu ý: file Claude ghi ra bằng chương trình thường chỉ hiện số trong ô công thức khi mở bằng Excel; xem trước trong ứng dụng khác có thể thấy ô trống.</p>
+
+  <h3>Bước 2 · Đối chiếu chéo ba nguồn</h3>
+  <div class="pr"><header><b>P07</b><span>Đối chiếu với tháng 9 và báo cáo các phòng</span><button class="copy" data-copy>Chép</button></header>
+<pre>Đối chiếu Biểu 01 vừa lập với 3 nguồn, mỗi chỗ lệch ghi: lệch bao nhiêu, vì sao, nên dùng số nào, cần ai xác nhận:
+1. Báo cáo tháng 9 đã gửi tỉnh (thư mục 03): số "đang giải quyết" cuối tháng 9 so với "kỳ trước chuyển sang" tháng 10.
+2. Báo cáo của Phòng Kinh tế (thư mục 02): nếu có nhiều bản thì dùng bản mới nhất và nói vì sao.
+3. Báo cáo của Phòng Văn hóa – Xã hội (thư mục 02) và ảnh gửi qua Zalo trong cùng thư mục. Nếu chữ trong file bị vỡ thì chuyển về chữ Việt chuẩn trước.
+Không tự sửa số theo báo cáo của phòng. Số chính thức theo hệ thống; chênh lệch phải giải thích được.
+Cuối cùng cho tôi 2 con số đã giải quyết: theo hệ thống, và có tính các hồ sơ trả bằng giấy trong ảnh (ghi rõ là tạm tính).</pre></div>
+  <div class="kn">
+    <span class="h">Kiến thức cần biết</span>
+    <ul>
+      <li><b>Chữ vỡ (phông TCVN3):</b> nhiều máy cơ quan còn gõ bằng bộ mã cũ, sang máy khác chữ thành kiểu "Chi nh¸nh" (dấu biến thành ký hiệu lạ). Claude chuyển được về chữ Việt chuẩn, nhưng bạn nên đọc lại vài dòng.</li>
+      <li><b>Ảnh chụp:</b> Claude đọc được chữ trong ảnh. Lần chạy thử, nó đọc ra đủ 6 mã hồ sơ trong ảnh Zalo và tìm thấy cả 6 trong file Trung tâm. Ảnh mờ thì nó có thể đọc sai, nên đối chiếu lại bằng mắt.</li>
+      <li><b>Hai con số:</b> số chính thức theo hệ thống, và số tạm tính có hồ sơ trả bằng giấy. Ghi rõ đâu là số nào để tỉnh không hiểu nhầm.</li>
+    </ul>
+  </div>
+
+  <figure class="anim" data-anim="4">
+    <div class="ah"><span>Hình minh hoạ · Ba chỗ lệch, ba lý do</span><button class="replay" type="button">↺ Xem lại</button></div>
+    <div class="sb flow" aria-hidden="true">
+      <div class="row4" style="grid-template-columns:repeat(auto-fit,minmax(9rem,1fr))">
+        <div class="bx warn" data-s="1"><b>Tháng 9: +3</b>Biểu tháng 9 ghi Xây dựng còn tồn nhiều hơn hệ thống 3 hồ sơ<small>3 hồ sơ đã trả 29–30/9, cập nhật hệ thống muộn</small></div>
+        <div class="bx warn" data-s="2"><b>Phòng Kinh tế: +4</b>Bản sửa 04/11 báo Đất đai nhiều hơn 4<small>Phòng đếm theo ngày ký 31/10; dân nhận 03/11</small></div>
+        <div class="bx warn" data-s="3"><b>Phòng VH-XH: +6</b>Bảo trợ xã hội nhiều hơn 6<small>6 hồ sơ trả bằng giấy, có trong ảnh Zalo, chưa lên hệ thống</small></div>
+      </div>
+      <p class="res" data-s="4">Đã giải quyết: <b>3.035</b> theo hệ thống · 3.041 tạm tính<em>giải thích được</em></p>
+    </div>
+    <ol class="caps"><li>Kỳ trước lệch 3 hồ sơ Xây dựng.</li><li>Phòng Kinh tế đếm theo ngày ký, tỉnh tính theo ngày trả.</li><li>Phòng VH-XH lệch đúng bằng số hồ sơ trong ảnh Zalo.</li><li>Dùng số hệ thống, ghi số tạm tính, nêu đủ ba lý do.</li></ol>
+    <p class="note" style="margin:.5rem 0 0">Số từ bộ file mẫu (giả lập) và đáp án của nó.</p>
+  </figure>
+
+  <p><b>Kiểm thế nào:</b> mỗi chỗ lệch có đủ 4 ý (lệch bao nhiêu, vì sao, dùng số nào, ai xác nhận); không số nào trong Biểu 01 bị sửa theo báo cáo của phòng.</p>
+  <div class="ex">
+    <span class="h">Bài tập 6 · khoảng 20 phút</span>
+    <span class="lvl">Mức 2 · Có gợi ý</span>
+    <ol>
+      <li>Mở Biểu 01 bằng Excel. <b>Tự viết</b> thêm một cột kiểm thứ hai, không nhờ Claude: tiếp nhận phải bằng kỳ trước chuyển sang cộng ba cột hồ sơ mới.</li>
+      <li>Kéo công thức xuống đủ 7 lĩnh vực và dòng tổng.</li>
+    </ol>
+    <details><summary>Gợi ý nếu bí</summary><p>Công thức có dạng <code>=[ô tiếp nhận]-([ô kỳ trước]+[ô trực tuyến]+[ô trực tiếp]+[ô bưu chính])</code>. Bấm vào từng ô để lấy địa chỉ (ví dụ C5), đừng gõ số vào công thức.</p></details>
+    <p class="xong"><b>Xong khi:</b> cột kiểm thứ hai bằng 0 ở cả 7 lĩnh vực và dòng tổng; bạn giải thích được bằng lời của mình 3 chỗ lệch.</p>
+    <label class="check"><input type="checkbox" data-ex-box="6"> Mình đã làm xong bài tập 6</label>
+  </div>
+</section>
+
+<!-- CHẶNG 7 -->
+<section class="stage" id="chang-7" data-ex="7">
+  <p class="tag">Chặng 7 · Văn bản <span class="min">· ▶ <a class="t" data-t="0">--:--</a></span></p>
+  <h2>Biểu 02, báo cáo, công văn, <em>biên bản</em></h2>
+  <p><b>Làm gì:</b> từ số đã kiểm, lập danh sách hồ sơ quá hạn, viết báo cáo gửi tỉnh, dự thảo công văn gửi các phòng, và biên bản giao ban.</p>
+  <p><b>Vì sao để sau cùng:</b> văn bản viết khi số chưa chắc thì phải sửa lại cả loạt. Văn bản có khuôn rõ là việc dễ giao cho Claude nhất; bạn chỉ cần kiểm người nhận, việc, và hạn.</p>
+
+  <h3>Bước 1 · Biểu 02 và báo cáo</h3>
+  <div class="pr"><header><b>P08</b><span>Biểu 02 và báo cáo gửi tỉnh</span><button class="copy" data-copy>Chép</button></header>
+<pre>Lập Biểu 02 theo mẫu trong 04-van-ban: danh sách hồ sơ quá hạn trong tháng 10 (đã trả quá hạn và đang quá hạn), có mã hồ sơ, thủ tục, lĩnh vực, phòng, ngày hẹn, ngày trả, số ngày quá hạn (ghi rõ đếm theo ngày lịch), lý do, phiếu xin lỗi.
+KHÔNG ghi họ tên, số điện thoại người dân.
+Hồ sơ nào thiếu lý do hoặc thiếu phiếu xin lỗi thì tô vàng và gom thành danh sách riêng theo phòng.
+Sau đó viết báo cáo theo mẫu 04-van-ban/Mau bao cao.docx, không quá 2 trang. Mỗi nhận xét phải có số: tỷ lệ trước hạn và đúng hạn, lĩnh vực quá hạn nhiều nhất (cộng cả đã trả quá hạn và đang quá hạn), so tháng 9. Mục chênh lệch: ghi 3 chỗ lệch đã đối chiếu và cách xử lý.</pre></div>
+  <p class="meta">Sau lần chạy thử, mình ghi rõ "cộng cả đã trả quá hạn và đang quá hạn": nếu không, "lĩnh vực quá hạn nhiều nhất" hiểu theo hai cách thì ra hai lĩnh vực khác nhau.</p>
+
+  <h3>Bước 2 · Công văn</h3>
+  <div class="pr"><header><b>P09</b><span>Dự thảo công văn gửi các phòng</span><button class="copy" data-copy>Chép</button></header>
+<pre>Soạn dự thảo công văn của UBND xã theo mẫu 04-van-ban/Mau cong van.docx, gửi Phòng Kinh tế, Phòng Văn hóa – Xã hội và Trung tâm Phục vụ hành chính công: (1) bổ sung lý do và phiếu xin lỗi cho các hồ sơ quá hạn còn thiếu, kèm danh sách theo từng phòng (hồ sơ thuộc Văn phòng thì ghi "Văn phòng tự bổ sung"); (2) Phòng Văn hóa – Xã hội cập nhật 6 hồ sơ trả bằng giấy lên hệ thống; (3) Trung tâm kiểm lại các hồ sơ trống ngày trả hoặc sai ngày. Việc (1) hạn "trong tuần" theo kết luận giao ban; việc (2), (3) để trống hạn cho tôi điền. Số công văn, người ký để trống.</pre></div>
+  <p><b>Vì sao để trống số và người ký:</b> đó là phần của người có thẩm quyền. Claude soạn, bạn trình, người ký quyết.</p>
+
+  <h3>Bước 3 · Biên bản từ ghi chú vội</h3>
+  <p>Một biên bản đúng có bốn phần: họp lúc nào, ở đâu · ai dự, ai vắng · mỗi người nói gì · kết luận (ai làm gì, hạn khi nào).</p>
+  <div class="pr"><header><b>P10</b><span>Biên bản giao ban</span><button class="copy" data-copy>Chép</button></header>
+<pre>Từ file 05-hop/ghi chu giao ban UBND xa 04-11.txt, viết biên bản theo mẫu 04-van-ban/Mau bien ban hop.docx.
+- Viết đầy đủ chữ viết tắt (a = anh, c = chị, CT = Chủ tịch, PCT = Phó Chủ tịch, P.KT = Phòng Kinh tế, VH-XH = Văn hóa – Xã hội, TT = Trung tâm, PVHCC = Phục vụ hành chính công, GĐ = Giám đốc, VP = Văn phòng HĐND và UBND, BTXH = Bảo trợ xã hội, hs = hồ sơ, BC = báo cáo). Chữ nào không chắc nghĩa thì giữ nguyên và đánh dấu.
+- Phần kết luận: bảng 3 cột Ai – Làm gì – Hạn. Việc nào ghi chú chỉ ghi "trong tuần" thì giữ nguyên, không tự đổi thành ngày.
+- Đối chiếu với số liệu đã kiểm: chỗ nào ghi chú có dấu hỏi mà số liệu đã trả lời được thì ghi rõ ở mục "Ghi chú của thư ký".
+Lưu thành file Word mới.</pre></div>
+  <p>Xem ba chỗ: <b>ai vắng</b> (Phó Chủ tịch đi họp tỉnh, phải ghi vắng có lý do) · câu <b>"xây dựng tháng 9 báo lệch 3 hs??"</b> (chặng 6 đã trả lời) · <b>kết luận</b> có người, có hạn, và "trong tuần" giữ nguyên.</p>
+
+  <p><b>Kiểm thế nào:</b> tìm trong Biểu 02 và báo cáo không có họ tên, số điện thoại người dân; báo cáo không quá 2 trang và có mục chênh lệch; biên bản không tự đặt ngày cho việc "trong tuần".</p>
+  <div class="ex">
+    <span class="h">Bài tập 7 · khoảng 30 phút</span>
+    <span class="lvl">Mức 2 · Có gợi ý</span>
+    <ol>
+      <li>Chạy P08, P09, P10.</li>
+      <li>Tự viết <b>một câu lệnh soát</b> nhờ Claude kiểm cả 4 file vừa tạo theo các quy tắc trong CLAUDE.md của thư mục.</li>
+    </ol>
+    <details><summary>Gợi ý nếu bí</summary><p>Câu soát nên nói: kiểm file nào, theo quy tắc nào (không tên người dân; số khớp Biểu 01; hạn đúng như ghi chú họp), và trả lời dạng bảng "quy tắc · đạt/không · ở đâu".</p></details>
+    <p class="xong"><b>Xong khi:</b> có 4 file (Biểu 02, báo cáo, công văn, biên bản); bảng soát không còn dòng "không đạt".</p>
+    <label class="check"><input type="checkbox" data-ex-box="7"> Mình đã làm xong bài tập 7</label>
+  </div>
+  <details class="ans"><summary>Đáp án để so (mở sau khi làm xong)</summary>
+    <p>Biểu 02: <b>92</b> hồ sơ quá hạn (52 đã trả quá hạn, 40 đang quá hạn); <b>7</b> hồ sơ thiếu lý do hoặc phiếu xin lỗi. Biên bản: Phó Chủ tịch vắng có lý do; "trong tuần" giữ nguyên.</p>
+  </details>
+</section>
+
+<!-- CHẶNG 8 -->
+<section class="stage" id="chang-8" data-ex="8">
+  <p class="tag">Chặng 8 · Skill <span class="min">· ▶ <a class="t" data-t="0">--:--</a></span></p>
+  <h2>Dạy một lần, <em>tháng sau chỉ cần gọi tên</em></h2>
+  <p><b>Làm gì:</b> biến những bước vừa làm thành một skill tên <code>bao-cao-tthc-thang</code>.</p>
+  <p><b>Vì sao:</b> tháng sau lại có file mới, cùng loại lỗi. Không có skill, bạn phải nhớ và chép lại cả chục câu lệnh, dễ sót một quy tắc. Có skill, chỉ cần thả file mới vào và gọi tên.</p>
+  <div class="kn">
+    <span class="h">Kiến thức cần biết</span>
+    <ul>
+      <li>Skill là một thư mục có file <code>SKILL.md</code>, ghi khi nào dùng và các bước làm.</li>
+      <li>Claude tự dùng skill khi việc bạn nói khớp với mô tả, hoặc bạn gọi thẳng tên nó.</li>
+    </ul>
+    <p class="src"><span class="lv ok">Đã kiểm chứng</span> <a href="https://code.claude.com/docs/en/skills" target="_blank" rel="noopener">Skills</a>, tra 16/11/2026.</p>
+  </div>
+  <div class="pr"><header><b>P11</b><span>Tạo skill từ việc vừa làm</span><button class="copy" data-copy>Chép</button></header>
+<pre>Hãy tạo một skill tên "bao-cao-tthc-thang" từ đúng những bước chúng ta vừa làm: khám sức khoẻ file, làm sạch (xã khác, dòng trùng, ngày nhiều kiểu, tên lĩnh vực), lập Biểu 01 theo cách tính của tỉnh, tự kiểm bằng công thức, đối chiếu với tháng trước và báo cáo các phòng, lập Biểu 02 không có tên người dân, viết báo cáo có mục chênh lệch, dự thảo công văn. Ghi rõ các quy tắc: không tin dòng tổng có sẵn, không tự xếp hạn hồ sơ thiếu ngày, chỗ không chắc phải hỏi.</pre></div>
+  <p>Thử ngay trong <b>cuộc trò chuyện mới</b> (New):</p>
+  <div class="pr"><header><b>P12</b><span>Gọi skill</span><button class="copy" data-copy>Chép</button></header><pre>làm báo cáo thủ tục hành chính tháng 10 theo skill bao-cao-tthc-thang cho thư mục này</pre></div>
+  <p class="meta"><span class="lv no">Chưa xác minh</span> P11, P12 chưa chạy thử với bộ file này.</p>
+  <p><b>Kiểm thế nào:</b> mở <code>SKILL.md</code>, đọc lướt: đủ các bước và đủ ba quy tắc chưa. Chạy P12 trong cuộc trò chuyện mới: Biểu 01 ra cùng số với lần làm tay ở chặng 5.</p>
+  <div class="ex">
+    <span class="h">Bài tập 8 · khoảng 30 phút</span>
+    <span class="lvl">Mức 2 · Có gợi ý</span>
+    <ol>
+      <li>Tạo skill bằng P11, đọc SKILL.md.</li>
+      <li>Tự viết thêm vào skill <b>một quy tắc</b> bạn rút ra ở chặng 5–7 mà P11 chưa có.</li>
+      <li>Chạy P12 trong cuộc trò chuyện mới.</li>
+    </ol>
+    <details><summary>Gợi ý nếu bí</summary><p>Ví dụ các quy tắc chưa có trong P11: "dòng ghi kiểu Mỹ thì đọc cả dòng kiểu Mỹ"; "phòng gửi nhiều bản thì dùng bản mới nhất"; "đã giải quyết tính theo ngày trả". Câu lệnh: "Thêm vào skill bao-cao-tthc-thang quy tắc: […]".</p></details>
+    <p class="xong"><b>Xong khi:</b> skill có quy tắc bạn thêm; lần chạy trong cuộc trò chuyện mới ra tiếp nhận và đã giải quyết giống hệt lần đầu.</p>
+    <label class="check"><input type="checkbox" data-ex-box="8"> Mình đã làm xong bài tập 8</label>
+  </div>
+</section>
+
+<!-- CHẶNG 9 -->
+<section class="stage" id="chang-9" data-ex="9">
+  <p class="tag">Chặng 9 · Tự động hoá <span class="min">· ▶ <a class="t" data-t="0">--:--</a></span></p>
+  <h2>Mỗi sáng một <em>danh sách việc</em></h2>
+  <p><b>Làm gì:</b> hẹn Claude mỗi sáng 7 giờ 30 lọc hồ sơ sắp đến hạn và đã quá hạn, chia theo phòng.</p>
+  <p><b>Vì sao:</b> báo cáo một tháng một lần, nhưng tránh quá hạn thì phải nhìn mỗi ngày. Một danh sách sẵn mỗi sáng giúp nhắc các phòng trước khi hồ sơ trễ, thay vì ngồi giải trình sau.</p>
+  <h3>Ba kiểu hẹn giờ</h3>
+  <table class="cmp">
+    <thead><tr><th>Kiểu</th><th>Ưu điểm</th><th>Nhược điểm</th></tr></thead>
+    <tbody>
+      <tr><td>1 · Hẹn giờ trên máy (thẻ Code → Scheduled)</td><td>Đọc được file trong máy</td><td>Máy phải bật và ứng dụng phải mở; lỡ giờ thì lần đó bị bỏ qua</td></tr>
+      <tr><td>2 · Hẹn giờ trên đám mây</td><td>Máy tắt vẫn chạy</td><td>Không đọc được file trong máy; còn là bản thử nghiệm</td></tr>
+      <tr><td>3 · Lệnh lặp trong cuộc trò chuyện</td><td>Nhanh, không cần cài</td><td>Chỉ chạy khi cuộc trò chuyện còn mở</td></tr>
+    </tbody>
+  </table>
+  <p class="meta"><span class="lv ok">Đã kiểm chứng</span> <a href="https://code.claude.com/docs/en/desktop-scheduled-tasks" target="_blank" rel="noopener">Desktop scheduled tasks</a>, <a href="https://code.claude.com/docs/en/scheduled-tasks" target="_blank" rel="noopener">Scheduled tasks</a>, tra 16/11/2026. Còn cách giao việc khi bạn đi vắng mà máy ở nhà vẫn làm; cách này cần thêm chi phí, mình sẽ nói ở video khác.</p>
+  <p>Việc của chị Hà nằm trong máy, nên chọn kiểu 1. Vào thẻ Code → <b>Scheduled</b> → tạo tác vụ mới:</p>
+  <div class="pr"><header><b>P13</b><span>Tác vụ mỗi sáng</span><button class="copy" data-copy>Chép</button></header>
+<pre>Mỗi ngày làm việc lúc 7 giờ 30: đọc file xuất mới nhất của Trung tâm trong thư mục 01. Lọc hồ sơ chưa trả có ngày hẹn trả trong 2 ngày làm việc tới, và hồ sơ đã quá hạn. Ghi file VIEC-HOM-NAY.txt chia theo từng phòng: mã hồ sơ, thủ tục, ngày hẹn, còn mấy ngày. Không ghi tên, số điện thoại người dân. Soạn sẵn tin nhắc cho từng phòng, nhưng KHÔNG tự gửi.</pre></div>
+  <p><b>Vì sao "KHÔNG tự gửi":</b> tác vụ chạy lúc không ai ngồi canh. Gửi gì ra ngoài, người bấm nút vẫn phải là bạn.</p>
+  <p class="meta"><span class="lv no">Chưa xác minh</span> P13 chưa chạy thử; mục Scheduled cần ứng dụng bản 1.1.5368 trở lên.</p>
+  <p class="note">Với bộ file mẫu, dữ liệu dừng ở 31/10/2026, nên khi chạy thử vào ngày khác, gần như mọi hồ sơ chưa trả sẽ hiện là đã quá hạn. Như vậy là đúng. Với việc thật, mỗi sáng bạn thả file xuất mới vào thư mục 01.</p>
+  <p><b>Kiểm thế nào:</b> bấm chạy thử ngay, không chờ sáng mai. File VIEC-HOM-NAY.txt có các nhóm theo phòng, không có tên người dân, và không có tin nào bị gửi đi.</p>
+  <div class="ex">
+    <span class="h">Bài tập 9 · khoảng 20 phút</span>
+    <span class="lvl">Mức 3 · Tự làm</span>
+    <p><b>Mục tiêu:</b> tạo một tác vụ hẹn giờ cho <b>một việc lặp lại của chính bạn</b> (ví dụ: mỗi chiều thứ Sáu tổng hợp file trong một thư mục). Tác vụ chỉ được soạn, không được tự gửi.</p>
+    <details><summary>Gợi ý nếu bí</summary><p>Câu lệnh cần: lúc nào chạy, đọc file nào, lọc gì, ghi ra file nào, điều cấm.</p></details>
+    <p class="xong"><b>Xong khi:</b> bấm chạy thử ra đúng file kết quả bạn muốn, và bạn đọc lại thấy không có gì bị gửi ra ngoài.</p>
+    <label class="check"><input type="checkbox" data-ex-box="9"> Mình đã làm xong bài tập 9</label>
+  </div>
+</section>
+
+<!-- CHẶNG 10 -->
+<section class="stage" id="chang-10" data-ex="10">
+  <p class="tag">Chặng 10 · Làm web <span class="min">· ▶ <a class="t" data-t="0">--:--</a></span></p>
+  <h2>Trang theo dõi <em>cho lãnh đạo xã</em></h2>
+  <p><b>Làm gì:</b> làm một trang web một file từ Biểu 01 và Biểu 02, mở bằng trình duyệt, xem được trên điện thoại.</p>
+  <p><b>Vì sao:</b> lãnh đạo không phải lúc nào cũng mở Excel. Bốn con số và một danh sách trên điện thoại là đủ để nắm tình hình trong một phút.</p>
+  <div class="pr"><header><b>P14</b><span>Làm trang theo dõi</span><button class="copy" data-copy>Chép</button></header>
+<pre>Từ file Bieu01 T10 và Biểu 02, làm một trang web một file HTML tên theo-doi-tthc-T10.html: 4 ô số trên cùng (tổng tiếp nhận, tỷ lệ trước hạn và đúng hạn, số đang quá hạn, số hồ sơ thiếu phiếu xin lỗi), biểu đồ cột theo lĩnh vực, bảng hồ sơ quá hạn theo phòng (không có tên người dân). Màu nhã, chữ to, xem tốt trên điện thoại. Số trên trang lấy đúng từ file, ghi nguồn và ngày ở cuối trang.</pre></div>
+  <div class="pr"><header><b>P15</b><span>Sửa thiết kế</span><button class="copy" data-copy>Chép</button></header><pre>Sửa: đưa bảng hồ sơ quá hạn lên đầu, tô màu cam những hồ sơ thiếu phiếu xin lỗi.</pre></div>
+  <p class="meta"><span class="lv no">Chưa xác minh</span> P14, P15 chưa chạy thử với bộ file này.</p>
+  <p><b>Vì sao phải đối chiếu số:</b> trang đẹp mà số sai thì còn tệ hơn không có trang. Trang nằm trong máy bạn; đưa lên mạng cho người khác xem là việc khác, có chuyện bảo mật, mình để video sau.</p>
+  <p><b>Kiểm thế nào:</b> 4 ô số trên trang trùng với số trong Biểu 01 và Biểu 02; thu nhỏ cửa sổ bằng điện thoại không bị tràn ngang.</p>
+  <div class="ex">
+    <span class="h">Bài tập 10 · khoảng 20 phút</span>
+    <span class="lvl">Mức 3 · Tự làm</span>
+    <p><b>Mục tiêu:</b> thêm vào trang một phần bạn thấy lãnh đạo cần (ví dụ: so với tháng 9), tự viết câu lệnh.</p>
+    <p class="xong"><b>Xong khi:</b> phần mới hiện đúng; mọi con số trên trang bạn đã tự dò lại với file Excel ít nhất một lần.</p>
+    <label class="check"><input type="checkbox" data-ex-box="10"> Mình đã làm xong bài tập 10</label>
+  </div>
+</section>
+
+<!-- CHẶNG 11 -->
+<section class="stage" id="chang-11" data-ex="11">
+  <p class="tag">Chặng 11 · Kết <span class="min">· ▶ <a class="t" data-t="0">--:--</a></span></p>
+  <h2>Trước và sau, và <em>giới hạn nói thẳng</em></h2>
+  <p><b>Làm gì:</b> nhìn lại cả quy trình, biết giới hạn trước khi dùng cho việc thật.</p>
+  <p>Điều đáng giá hơn tốc độ là chất lượng: lỗi được bắt, chỗ lệch giải thích được, và chỗ không chắc thì được hỏi lại thay vì bịa.</p>
+  <h3>Giới hạn</h3>
+  <ul class="list">
+    <li>Claude vẫn có thể sai. Việc quan trọng thì kiểm, lần đầu thì làm song song.</li>
+    <li>Gói Pro có giới hạn lượt dùng; việc nặng, buổi dài có thể phải chờ.</li>
+    <li>Dữ liệu cơ quan: làm đúng quy định của đơn vị, không đưa văn bản mật, không đưa thông tin cá nhân của người dân khi không cần.</li>
+    <li>Claude không quyết định thay bạn, không ký thay bạn. Nó làm phần tay chân, bạn giữ phần phán đoán.</li>
+  </ul>
+  <h3>Tóm lại cả bài</h3>
+  <ol class="toc" style="counter-reset:c">
+    <li><a href="#chang-2">Đưa đủ thông tin, ghi điều lâu dài vào CLAUDE.md.</a></li>
+    <li><a href="#chang-5">Đọc đề trước, khám file trước khi chữa.</a></li>
+    <li><a href="#chang-5">Lên kế hoạch (Plan) và đọc nó trước khi cho làm.</a></li>
+    <li><a href="#chang-6">Kiểm ba lớp; giải thích chênh lệch, không ép số.</a></li>
+    <li><a href="#chang-8">Làm đúng một lần thì đóng gói thành skill.</a></li>
+    <li><a href="#chang-9">Việc lặp mỗi ngày thì hẹn giờ, nhưng không tự gửi.</a></li>
+  </ol>
+  <div class="ex">
+    <span class="h">Bài tập 11 · bài tổng kết</span>
+    <span class="lvl">Mức 3 · Tự làm</span>
+    <p><b>Mục tiêu:</b> giải nén một bản sạch của bộ file vào thư mục mới, và làm lại chặng 5–6 <b>không nhìn trang này</b>, chỉ dùng skill của bạn hoặc tự viết câu lệnh.</p>
+    <p class="xong"><b>Xong khi:</b> Biểu 01 của bạn khớp đáp án (mở gói đáp án lúc này), và bạn giải thích được 3 chỗ lệch mà không cần đọc lại.</p>
+    <label class="check"><input type="checkbox" data-ex-box="11"> Mình đã làm xong bài tập 11</label>
+  </div>
+</section>
+
+<!-- NGUỒN -->
+<section class="stage" id="nguon">
+  <p class="tag">Nguồn đã đối chiếu</p>
+  <h2>Mình đã kiểm <em>những gì</em></h2>
+  <p>Các tài liệu chính thức mình đối chiếu, tra ngày 16/11/2026: <a href="https://code.claude.com/docs/en/memory" target="_blank" rel="noopener">Memory</a> · <a href="https://code.claude.com/docs/en/desktop" target="_blank" rel="noopener">Desktop</a> · <a href="https://code.claude.com/docs/en/permission-modes" target="_blank" rel="noopener">Permission modes</a> · <a href="https://code.claude.com/docs/en/checkpointing" target="_blank" rel="noopener">Checkpointing</a> · <a href="https://code.claude.com/docs/en/commands" target="_blank" rel="noopener">Commands</a> · <a href="https://code.claude.com/docs/en/costs" target="_blank" rel="noopener">Costs</a> · <a href="https://code.claude.com/docs/en/skills" target="_blank" rel="noopener">Skills</a> · <a href="https://code.claude.com/docs/en/desktop-scheduled-tasks" target="_blank" rel="noopener">Scheduled tasks</a> · <a href="https://code.claude.com/docs/en/setup" target="_blank" rel="noopener">Setup</a> · <a href="https://claude.com/pricing" target="_blank" rel="noopener">Pricing</a> · <a href="https://privacy.claude.com/en/articles/12109829" target="_blank" rel="noopener">Privacy</a>.</p>
+  <p class="note">Bộ file và Công văn 1187 là <b>giả lập</b>, viết cho việc học; cách tính trong đó không phải mẫu chính thức của tỉnh nào. Với báo cáo thật, theo đúng văn bản của địa phương bạn.</p>
+</section>
+
+<!-- VỀ MÌNH -->
+<section class="stage" id="ve-minh">
+  <p class="tag">Về mình</p>
+  <div class="about">
+    <img src="../anh/alex.avif" alt="Ảnh chân dung Alex Hayes" width="208" height="208" loading="lazy">
+    <div>
+      <p class="name">Alex Hayes</p>
+      <p>Mình đang trên hành trình <b>10.000 giờ</b> học AI và xây dựng doanh nghiệp về AI, bắt đầu từ con số 0 và làm công khai. Mình không phải lập trình viên.</p>
+      <p>Mình livestream việc học trên YouTube. Mỗi video có một trang tài liệu như thế này.</p>
+      <p class="meta">Chắc chắn còn sơ suất. Bạn góp ý ở phần bình luận trên YouTube nhé.</p>
+    </div>
+  </div>
+  <div class="btns"><a class="btn" href="https://www.youtube.com/@Vannam_alexhayes" target="_blank" rel="noopener">Đăng ký kênh YouTube</a><a class="btn ghost" href="../">Xem trang của mình</a></div>
+  <footer>© Alex Hayes · Nhật ký 10.000 h · Cập nhật 16/11/2026</footer>
+</section>
+
+</main>
+<div class="toast" id="toast" role="status" aria-live="polite">Đã chép</div>
+
+<script>
+(function(){
+  // KHI VIDEO LÊN YOUTUBE: điền mã video vào giữa hai dấu nháy (phần sau "v=" hoặc sau "youtu.be/").
+  // Rồi điền mốc giây vào data-t của từng chặng (ví dụ data-t="125" cho phút 02:05), chữ --:-- tự đổi.
+  var VIDEO_ID='';
+
+  var toast=document.getElementById('toast'), tt;
+  function say(m){toast.textContent=m;toast.classList.add('show');clearTimeout(tt);tt=setTimeout(function(){toast.classList.remove('show')},1600)}
+  function copyText(t,btn){
+    function ok(){say('Đã chép');if(btn){var o=btn.textContent;btn.textContent='Đã chép';btn.classList.add('done');setTimeout(function(){btn.textContent=o;btn.classList.remove('done')},1500)}}
+    function fb(){var a=document.createElement('textarea');a.value=t;a.style.position='fixed';a.style.opacity='0';document.body.appendChild(a);a.select();try{document.execCommand('copy');ok()}catch(e){say('Không chép được, bạn bôi đen rồi chép tay nhé')}a.remove()}
+    if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(t).then(ok,fb)}else fb();
+  }
+  document.addEventListener('click',function(e){
+    var b=e.target.closest('[data-copy],[data-dl]'); if(!b) return;
+    var t=b.closest('.pr').querySelector('pre').innerText.trim();
+    if(b.hasAttribute('data-dl')){
+      var blob=new Blob([t+'\n'],{type:'text/markdown;charset=utf-8'}), a=document.createElement('a');
+      a.href=URL.createObjectURL(blob); a.download=b.getAttribute('data-dl'); document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(function(){URL.revokeObjectURL(a.href)},1000); say('Đã tải '+b.getAttribute('data-dl')); return;
+    }
+    copyText(t,b);
+  });
+
+  // Mốc phút và video
+  function mmss(s){s=+s;return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0')}
+  document.querySelectorAll('a.t[data-t]').forEach(function(a){
+    var s=a.getAttribute('data-t'), has=VIDEO_ID&&s!=='0';
+    if(has){a.textContent=mmss(s);a.href='https://youtu.be/'+VIDEO_ID+'?t='+s;a.target='_blank';a.rel='noopener';a.title='Mở video ở phút này'}
+    else{a.removeAttribute('href');a.title='Mốc phút sẽ có khi video lên YouTube'}
+  });
+  if(VIDEO_ID){
+    document.getElementById('xem-video').href='https://youtu.be/'+VIDEO_ID;
+    var fr=document.createElement('iframe');
+    fr.src='https://www.youtube-nocookie.com/embed/'+VIDEO_ID; fr.title='Video: Claude Code cho dân văn phòng nhà nước, từ A đến Z';
+    fr.allow='accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen'; fr.allowFullscreen=true; fr.loading='lazy';
+    var pl=document.getElementById('player-link'); pl.parentNode.replaceChild(fr,pl);
+    document.getElementById('player-cap').textContent='Xem video ở trên. Mốc ▶ phút ở mỗi chặng mở video đúng đoạn đó trong thẻ mới, để bạn không mất chỗ đang đọc.';
+  }
+
+  // Form ghép câu bốn ý
+  var f4=document.querySelectorAll('#f4 [data-k]'), o4=document.getElementById('f4-out');
+  function build(){
+    var p=[],miss=0;
+    f4.forEach(function(el){var v=el.value.trim().replace(/[.\s]+$/,'');if(v)p.push(el.getAttribute('data-k')+': '+v+'.');else miss++});
+    if(!p.length){o4.textContent='Điền bốn ô ở trên…';return}
+    o4.textContent=p.join(' ')+' Chỗ nào không chắc thì hỏi tôi, không tự sửa.'+(miss?'\n\n(Còn thiếu '+miss+' ý.)':'');
+  }
+  f4.forEach(function(el){el.addEventListener('input',build)});
+
+  // Chữ to (để chiếu lên màn hình khi giảng)
+  var root=document.documentElement, FS='ah-video02-chuto';
+  try{if(localStorage.getItem(FS)==='1')root.classList.add('big')}catch(e){}
+  var fsb=document.getElementById('fs');
+  function fsLabel(){fsb.textContent=root.classList.contains('big')?'A− Chữ thường':'A+ Chữ to'}
+  fsLabel();
+  fsb.addEventListener('click',function(){root.classList.toggle('big');fsLabel();try{localStorage.setItem(FS,root.classList.contains('big')?'1':'0')}catch(e){}});
+
+  // Mục lục: mở/đóng trên điện thoại
+  var side=document.getElementById('side'), shade=document.getElementById('shade');
+  function openSide(o){side.classList.toggle('open',o);shade.classList.toggle('on',o)}
+  document.getElementById('mbtn').addEventListener('click',function(){openSide(true)});
+  document.getElementById('side-x').addEventListener('click',function(){openSide(false)});
+  shade.addEventListener('click',function(){openSide(false)});
+  side.querySelectorAll('a').forEach(function(a){a.addEventListener('click',function(){openSide(false)})});
+
+  // Mục lục: sáng chương đang đọc
+  var links=[].slice.call(side.querySelectorAll('a[href^="#"]'));
+  var secs=links.map(function(a){return document.querySelector(a.getAttribute('href'))});
+  function spy(){
+    var y=window.innerHeight*0.3, cur=0;
+    secs.forEach(function(s,i){if(s&&s.getBoundingClientRect().top<=y)cur=i});
+    links.forEach(function(a,i){a.classList.toggle('cur',i===cur)});
+  }
+  window.addEventListener('scroll',spy,{passive:true}); window.addEventListener('resize',spy); spy();
+
+  // Bài tập: nhớ trên trình duyệt người xem
+  var KEY='ah-video02-baitap-v1', st={};
+  try{st=JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){st={}}
+  var boxes=document.querySelectorAll('[data-ex-box]'), prog=document.getElementById('prog'), progS=document.getElementById('prog-side'), bar=document.getElementById('prog-bar');
+  function paint(){
+    var n=0;
+    boxes.forEach(function(b){var id=b.getAttribute('data-ex-box');b.checked=!!st[id];if(st[id])n++;
+      var sec=document.querySelector('[data-ex="'+id+'"]'); if(sec) sec.classList.toggle('done',!!st[id]);
+      var l=side.querySelector('a[data-c="'+id+'"]'); if(l) l.classList.toggle('ok',!!st[id]);
+    });
+    var t='Bài tập: '+n+'/'+boxes.length; prog.textContent=t; progS.textContent=t; bar.style.width=(100*n/boxes.length)+'%';
+  }
+  boxes.forEach(function(b){b.addEventListener('change',function(){st[b.getAttribute('data-ex-box')]=b.checked;try{localStorage.setItem(KEY,JSON.stringify(st))}catch(e){}paint()})});
+  paint();
+
+  // Hình động: mỗi .anim chạy từng bước s1, s2… khớp với dòng chú thích
+  var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function setCaps(a,i){a.querySelectorAll('.caps li').forEach(function(li,k){li.classList.toggle('on',k===i-1);li.classList.toggle('past',k<i-1)})}
+  function clear(a){clearTimeout(a._t);a.classList.add('reset');for(var k=1;k<=9;k++)a.classList.remove('s'+k);setCaps(a,0);void a.offsetWidth;a.classList.remove('reset')}
+  function run(a){
+    var n=+a.getAttribute('data-anim'); clear(a);
+    if(reduce){for(var k=1;k<=n;k++)a.classList.add('s'+k);a.querySelectorAll('.caps li').forEach(function(li){li.classList.add('on')});return}
+    var i=0;(function step(){i++;a.classList.add('s'+i);setCaps(a,i);if(i<n)a._t=setTimeout(step,2000)})();
+  }
+  var anims=document.querySelectorAll('.anim');
+  anims.forEach(function(a){a.querySelector('.replay').addEventListener('click',function(){run(a)})});
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(es){es.forEach(function(x){if(x.isIntersecting){run(x.target);io.unobserve(x.target)}})},{threshold:.4});
+    anims.forEach(function(a){io.observe(a)});
+  } else anims.forEach(run);
+})();
+</script>
+</body>
+</html>
