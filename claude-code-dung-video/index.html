@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Claude Code cho người mới: từ cài đặt tới lúc AI tự dựng xong video · Alex Hayes</title>
+<meta name="description" content="Tài liệu đi kèm video 03 của Alex Hayes: một buổi hướng dẫn thật, từ cài Claude Code, tạo CLAUDE.md, lấy skill có sẵn, tới lúc AI tự xem 14 đoạn quay và dựng thành 2 video. Đi theo câu hỏi của người học, có nguồn, mẫu để chép và 8 bài tập.">
+<style>
+:root{
+  --bg:#0d0e11; --panel:#14161a; --panel2:#181a1f; --line:rgba(201,169,106,.22); --line-soft:rgba(236,232,223,.10);
+  --text:#ece8df; --muted:#a39e92; --gold:#c9a96a; --gold-hi:#e6d3a8; --ok:#9fc28a;
+  --serif:"Palatino Linotype",Palatino,Cambria,"Times New Roman",serif;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  --mono:Consolas,"Cascadia Mono","SFMono-Regular",Menlo,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);font-weight:300;font-size:1.0625rem;line-height:1.75;overflow-x:hidden;
+  background-image:radial-gradient(ellipse at 90% -5%,rgba(201,169,106,.10),transparent 45%)}
+a{color:var(--gold-hi)}
+.top{display:flex;justify-content:space-between;align-items:center;max-width:60rem;margin:0 auto;padding:1rem 1.25rem;font-size:.85rem;letter-spacing:.08em}
+.top a{text-decoration:none;color:var(--muted)} .top a:hover{color:var(--gold-hi)}
+.top .prog{color:var(--gold);white-space:nowrap}
+.wrap{max-width:60rem;margin:0 auto;padding:0 1rem 3rem 3rem;position:relative}
+.wrap::before{content:"";position:absolute;left:1.35rem;top:0;bottom:0;width:1px;background:linear-gradient(to bottom,transparent,var(--gold) 4%,var(--gold) 96%,transparent);opacity:.4}
+.stage{position:relative;padding:3.2rem 0 1rem}
+.stage::before{content:"";position:absolute;left:-1.95rem;top:3.75rem;width:.6rem;height:.6rem;border-radius:50%;background:var(--gold);box-shadow:0 0 0 5px var(--bg),0 0 0 6px var(--line)}
+.stage.done::before{background:var(--ok)}
+.tag{font-size:.74rem;font-weight:500;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin:0 0 1rem}
+.tag .min{color:var(--muted);letter-spacing:.12em}
+h1,h2{font-family:var(--serif);font-weight:400;line-height:1.14;margin:0 0 1.2rem;text-wrap:balance;overflow-wrap:break-word}
+h1{font-size:clamp(2rem,8vw,3.6rem)}
+h2{font-size:clamp(1.7rem,6.4vw,2.6rem)}
+h1 em,h2 em{font-style:italic;color:var(--gold-hi)}
+h3{font-family:var(--serif);font-weight:400;font-size:1.3rem;margin:2rem 0 .7rem;color:var(--text)}
+p{margin:0 0 1.1rem;max-width:40rem;color:#d9d5cb}
+.lead{font-size:1.15rem;color:var(--text)}
+.meta{color:var(--muted);font-size:.92rem;letter-spacing:.04em}
+.btn{display:inline-block;background:linear-gradient(180deg,#d7bb7f,#c0a063);color:#17130a;font-weight:500;font-size:.8rem;letter-spacing:.18em;text-transform:uppercase;text-decoration:none;padding:.9rem 1.5rem;border-radius:2px;border:1px solid #d7bb7f;cursor:pointer;font-family:var(--sans)}
+.btn.ghost{background:transparent;color:var(--gold-hi);border-color:var(--line)}
+.btn:hover{background:transparent;color:var(--gold-hi);border-color:var(--gold)}
+.btns{display:flex;flex-wrap:wrap;gap:.7rem;margin:1.4rem 0}
+:focus-visible{outline:2px solid var(--gold-hi);outline-offset:3px}
+/* hướng dẫn dùng trang */
+.howto{border:1px solid var(--line);background:linear-gradient(135deg,rgba(201,169,106,.08),transparent 70%);padding:1.2rem 1.3rem;margin:1.6rem 0;max-width:42rem}
+.howto p{margin:0;font-size:.98rem}
+/* mục lục */
+.toc{list-style:none;padding:0;margin:1.4rem 0;max-width:42rem;counter-reset:c}
+.toc li{counter-increment:c;border-top:1px solid var(--line-soft)}
+.toc li:last-child{border-bottom:1px solid var(--line-soft)}
+.toc a{display:flex;gap:1rem;padding:.7rem 0;text-decoration:none;color:var(--text)}
+.toc a::before{content:counter(c);font-family:var(--serif);font-style:italic;color:var(--gold);width:1.4rem;flex:none}
+.toc a:hover{color:var(--gold-hi)}
+.toc small{margin-left:auto;color:var(--muted);white-space:nowrap}
+.toc .tick{color:var(--ok)}
+/* khối kiến thức */
+.kn{background:var(--panel);border:1px solid var(--line-soft);border-left:2px solid var(--gold);padding:1.2rem 1.3rem;margin:1.4rem 0;max-width:42rem}
+.kn .h,.ex .h,.err .h{display:block;font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin-bottom:.6rem}
+.kn ul{margin:0;padding-left:1.1rem} .kn li{margin:.35rem 0;color:#d9d5cb}
+.src{font-size:.85rem;color:var(--muted);margin:.8rem 0 0;border-top:1px solid var(--line-soft);padding-top:.6rem}
+.lv{display:inline-block;font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;padding:.1rem .5rem;border-radius:2px;margin-right:.4rem;vertical-align:1px}
+.lv.ok{color:#0d0e11;background:var(--ok)}
+.lv.no{color:var(--gold-hi);border:1px dashed var(--gold)}
+/* mẫu để chép */
+.pr{border:1px solid var(--line-soft);background:var(--panel2);margin:1.2rem 0;max-width:42rem}
+.pr header{display:flex;align-items:center;gap:.8rem;padding:.6rem .9rem;border-bottom:1px solid var(--line-soft);font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.pr header b{color:var(--gold);font-weight:500}
+.pr header span{flex:1;min-width:0}
+.pr pre{margin:0;padding:1rem;white-space:pre-wrap;word-break:break-word;font-family:var(--mono);font-size:.9rem;line-height:1.6;color:var(--text)}
+.copy{flex:none;font:inherit;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:#17130a;background:var(--gold);border:0;border-radius:2px;padding:.35rem .8rem;cursor:pointer}
+.copy.ghost{background:transparent;color:var(--gold-hi);border:1px solid var(--line)}
+.copy.done{background:var(--ok)}
+.hl{color:var(--gold-hi);background:rgba(201,169,106,.14);padding:0 .15rem}
+/* bài tập */
+.ex{border:1px solid var(--gold);padding:1.2rem 1.3rem;margin:1.6rem 0;max-width:42rem;background:linear-gradient(135deg,rgba(201,169,106,.07),transparent 60%)}
+.ex ol{margin:.3rem 0 .8rem;padding-left:1.2rem} .ex li{margin:.3rem 0;color:#d9d5cb}
+.ex .xong{font-size:.95rem;color:var(--muted);margin:0 0 .9rem}
+.ex .xong b{color:var(--gold-hi);font-weight:400}
+.ex .lvl{display:inline-block;font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-hi);border:1px solid var(--line);border-radius:99px;padding:.05rem .6rem;margin:0 0 .7rem}
+.ex details{margin:.2rem 0 1rem;font-size:.95rem;color:var(--muted)}
+.ex summary{cursor:pointer;color:var(--gold-hi)}
+.levels{list-style:none;padding:0;margin:.8rem 0 0;font-size:.95rem}
+.levels li{margin:.25rem 0;color:#d9d5cb}
+.check{display:flex;align-items:center;gap:.6rem;cursor:pointer;color:var(--text);font-size:.95rem}
+.check input{width:1.15rem;height:1.15rem;accent-color:var(--ok)}
+/* hình động minh hoạ */
+.anim{border:1px solid var(--line-soft);background:var(--panel);margin:1.6rem 0;max-width:42rem;padding:.9rem .9rem .8rem}
+.anim .ah{display:flex;justify-content:space-between;align-items:center;gap:.6rem;font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:.7rem}
+.replay{flex:none;font:inherit;font-size:.75rem;letter-spacing:.06em;text-transform:none;color:var(--gold-hi);background:transparent;border:1px solid var(--line);border-radius:2px;padding:.2rem .7rem;cursor:pointer}
+.sb{position:relative;height:240px;overflow:hidden;border-radius:2px;background:#101216;border:1px solid var(--line-soft);font-size:.85rem;line-height:1.45}
+.sb *{transition:opacity .6s ease,transform .7s ease,left 1s ease,top 1s ease,background-color .4s,border-color .4s,color .4s,box-shadow .4s}
+.anim.reset .sb *{transition:none!important}
+.caps{list-style:none;padding:0;margin:.8rem 0 0;counter-reset:k}
+.caps li{counter-increment:k;position:relative;padding:.15rem 0 .15rem 1.6rem;font-size:.93rem;color:var(--muted);opacity:.45;transition:opacity .4s,color .4s}
+.caps li::before{content:counter(k);position:absolute;left:0;top:.15rem;font-family:var(--serif);font-style:italic;color:var(--gold)}
+.caps li.past{opacity:.8}
+.caps li.on{opacity:1;color:var(--text)}
+/* 1 · hay quên */
+.a-mem .bar{position:absolute;left:0;right:0;top:0;height:30px;border-bottom:1px solid var(--line-soft);display:flex;align-items:center;gap:6px;padding:0 10px;font-size:.75rem;color:var(--muted)}
+.a-mem .bar i{width:7px;height:7px;border-radius:50%;background:#333840}
+.a-mem .bar span{position:absolute;left:50%;transform:translateX(-50%);white-space:nowrap}
+.a-mem .t2{opacity:0;color:var(--gold-hi)}
+.bub{position:absolute;top:46px;max-width:70%;padding:.45rem .7rem;border-radius:10px;opacity:0;transform:translateY(8px);color:var(--text)}
+.bub.u{right:12px;background:rgba(201,169,106,.18)}
+.bub.c{left:12px;background:#1d2026;border:1px solid var(--line-soft)}
+.bub.c.hello{border-color:var(--gold)}
+.mdcard{position:absolute;right:12px;bottom:12px;width:48%;display:grid;gap:1px;font-family:var(--mono);font-size:.72rem;color:#cfcbc1;background:#15171b;border:1px solid var(--gold);padding:.45rem .6rem;opacity:0;transform:translateX(30px)}
+.mdcard b{color:var(--gold-hi);font-weight:400}
+.anim.s1 .a-mem .u{opacity:1;transform:none}
+.anim.s2 .a-mem .u,.anim.s2 .a-mem .t1{opacity:0}
+.anim.s2 .a-mem .t2{opacity:1}
+.anim.s2 .a-mem .forget{opacity:1;transform:none}
+.anim.s3 .a-mem .mdcard{opacity:1;transform:none}
+.anim.s4 .a-mem .forget{opacity:0}
+.anim.s4 .a-mem .hello{opacity:1;transform:none}
+.anim.s4 .a-mem .mdcard{box-shadow:0 0 0 4px rgba(201,169,106,.2)}
+@media (prefers-reduced-motion:reduce){.sb *,.caps li{transition:none!important}}
+/* lỗi hay gặp */
+.err{margin:1.4rem 0;max-width:42rem}
+.err dl{margin:0} .err dt{color:var(--text);margin-top:.6rem} .err dd{margin:0 0 .4rem;color:var(--muted);font-size:.95rem}
+/* form */
+.form{display:grid;gap:.9rem;margin:1rem 0;max-width:42rem}
+.form label{display:grid;gap:.3rem;font-size:.92rem;color:var(--muted)}
+.form input,.form textarea{width:100%;font:inherit;font-size:.98rem;color:var(--text);background:var(--panel);border:1px solid var(--line-soft);border-radius:2px;padding:.6rem .7rem}
+.form textarea{min-height:4.2rem;resize:vertical}
+.form input:focus,.form textarea:focus{border-color:var(--gold);outline:none}
+/* số liệu */
+.sum{display:flex;flex-wrap:wrap;align-items:baseline;gap:.4rem .9rem;font-family:var(--serif);font-size:clamp(1.4rem,5vw,2rem);margin:1rem 0;color:var(--text)}
+.sum b{color:var(--gold-hi);font-weight:400} .sum small{font-family:var(--sans);font-size:.85rem;color:var(--muted);width:100%}
+.tree{font-family:var(--mono);font-size:.88rem;line-height:1.7;background:var(--panel);border:1px solid var(--line-soft);padding:1rem;max-width:42rem;white-space:pre;overflow-x:auto;color:#d9d5cb}
+.list{list-style:none;padding:0;margin:1rem 0;max-width:40rem}
+.list li{position:relative;padding:.7rem 0 .7rem 1.8rem;border-bottom:1px solid var(--line-soft);color:#d9d5cb}
+.list li::before{content:"";position:absolute;left:.2rem;top:1.45rem;width:.5rem;height:1px;background:var(--gold)}
+.quote{margin:2rem 0 1rem;padding:.3rem 0 .3rem 1.4rem;border-left:1px solid var(--gold);max-width:40rem}
+.quote p{font-family:var(--serif);font-style:italic;font-size:clamp(1.25rem,4.6vw,1.7rem);line-height:1.4;color:var(--gold-hi);margin:0}
+footer{color:var(--muted);font-size:.85rem;letter-spacing:.1em;padding:1.6rem 0 0;border-top:1px solid var(--line-soft);margin-top:2.4rem}
+.toast{position:fixed;left:50%;bottom:1.2rem;transform:translateX(-50%) translateY(150%);background:var(--ok);color:#0d0e11;font-size:.85rem;padding:.5rem 1rem;border-radius:2px;transition:transform .25s}
+.toast.show{transform:translateX(-50%)}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.toast{transition:none}}
+@media (min-width:48rem){
+  body{font-size:1.125rem}
+  .top{padding:1.2rem 2rem}
+  .wrap{padding:0 2rem 4rem 5rem}
+  .wrap::before{left:2.3rem}
+  .stage::before{left:-2.85rem;top:5.05rem}
+  .stage{padding-top:4.5rem}
+  .form.two{grid-template-columns:1fr 1fr}
+}
+/* mốc phút, về mình, bảng so sánh */
+.t{color:var(--muted);text-decoration:none;border-bottom:1px dotted var(--muted)}
+a.t:hover{color:var(--gold-hi)}
+.about{display:grid;gap:1.2rem;align-items:center;border:1px solid var(--line);padding:1.3rem;max-width:42rem;margin:1.6rem 0;background:linear-gradient(135deg,rgba(201,169,106,.08),transparent 70%)}
+.about img{width:6.5rem;height:6.5rem;border-radius:50%;object-fit:cover;object-position:50% 30%;border:1px solid var(--gold)}
+.about p{margin:0 0 .6rem}
+.about .name{font-family:var(--serif);font-size:1.3rem;color:var(--text);margin:0 0 .2rem}
+.steps{max-width:42rem;padding-left:1.3rem;margin:.6rem 0 1.2rem}.steps li{margin:.35rem 0;color:#d9d5cb}
+.player{margin:1.4rem 0 1.6rem;max-width:44rem}
+.player .pv,.player iframe{position:relative;display:block;width:100%;aspect-ratio:16/9;border:1px solid var(--line);background:var(--panel)}
+.player img{display:block;width:100%;height:100%;object-fit:cover}
+.player .play{position:absolute;left:50%;top:50%;width:4.2rem;height:4.2rem;margin:-2.1rem 0 0 -2.1rem;border-radius:50%;background:rgba(13,14,17,.72);border:1px solid var(--gold)}
+.player .play::after{content:"";position:absolute;left:1.65rem;top:1.25rem;border-left:1.3rem solid var(--gold-hi);border-top:.85rem solid transparent;border-bottom:.85rem solid transparent}
+.player .pv:hover .play{background:rgba(201,169,106,.3)}
+.player figcaption{font-size:.85rem;color:var(--muted);margin-top:.5rem}
+.cmp{width:100%;max-width:42rem;border-collapse:collapse;margin:1.2rem 0;font-size:.95rem}
+.cmp th,.cmp td{text-align:left;vertical-align:top;padding:.6rem .5rem;border-bottom:1px solid var(--line-soft);color:#d9d5cb}
+.cmp th{font-weight:400;color:var(--gold);font-size:.74rem;letter-spacing:.14em;text-transform:uppercase}
+.cmp td:first-child{color:var(--muted);width:30%}
+@media (min-width:40rem){.about{grid-template-columns:auto 1fr}}
+/* video03 */
+.q{border-left:2px solid var(--gold);padding:.2rem 0 .2rem .9rem;color:var(--gold-hi);font-size:1rem;max-width:40rem}
+.q b{font-weight:400;font-family:var(--serif);font-style:italic;font-size:1.1rem}
+/* 0 · 14 đoạn -> 2 bản */
+.a-flow .clips{position:absolute;left:4%;top:24px;width:40%;display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.a-flow .clips i{display:block;height:34px;border-radius:3px;background:#2a2d33;border:1px solid var(--line-soft);opacity:0;transform:scale(.6)}
+.a-flow .dir{position:absolute;left:4%;top:120px;width:40%;height:70px;border:1px solid var(--line);border-radius:4px;background:#15171b;opacity:0}
+.a-flow .dir span{position:absolute;left:8px;top:4px;font-size:.72rem;color:var(--muted)}
+.a-flow .ai{position:absolute;left:46%;top:92px;width:22%;padding:.4rem .3rem;text-align:center;font-size:.66rem;line-height:1.3;color:#17130a;background:var(--gold);border-radius:4px;opacity:0;transform:translateY(8px)}
+.a-flow .out{position:absolute;left:70%;width:26%;height:84px;border:1px solid var(--gold);border-radius:8px;background:#15171b;display:grid;align-content:center;text-align:center;opacity:0;transform:translateX(20px)}
+.a-flow .out b{font-weight:400;color:var(--gold-hi)} .a-flow .out span{font-size:.75rem;color:var(--muted)}
+.a-flow .o1{top:24px}.a-flow .o2{top:128px}
+.anim.s1 .a-flow .clips i{opacity:1;transform:none}
+.anim.s2 .a-flow .dir{opacity:1}
+.anim.s2 .a-flow .clips i{transform:translateY(110px) scale(.5);opacity:.85}
+.anim.s3 .a-flow .ai{opacity:1;transform:none;box-shadow:0 0 0 4px rgba(201,169,106,.2)}
+.anim.s4 .a-flow .out{opacity:1;transform:none}
+/* 2 · phiên dài và phiên ngắn */
+.a-ses .lane{position:absolute;left:4%;right:4%;height:90px;border:1px solid var(--line-soft);border-radius:4px;padding:6px 8px;opacity:.25}
+.a-ses .l1{top:14px}.a-ses .l2{top:126px}
+.a-ses .lane span{display:block;font-size:.75rem;color:var(--muted)}
+.a-ses .lane em{position:absolute;right:8px;bottom:6px;font-size:.7rem;font-style:normal;color:var(--muted)}
+.a-ses .g{position:absolute;bottom:26px;height:14px;border-radius:2px;background:var(--gold)}
+.a-ses .l1 .g1{left:8px;width:10%}.a-ses .l1 .g2{left:8px;width:30%;opacity:.8}.a-ses .l1 .g3{left:8px;width:55%;opacity:.6}.a-ses .l1 .g4{left:8px;width:85%;opacity:.4}
+.a-ses .l2 .g{width:18%;opacity:.9}.a-ses .l2 .g1{left:8px}.a-ses .l2 .g2{left:27%}.a-ses .l2 .g3{left:50%}.a-ses .l2 .g4{left:73%}
+.a-ses .l1 .g{transform:scaleX(0);transform-origin:left}
+.a-ses .l2 .g{transform:scaleY(0)}
+.anim.s1 .a-ses .l1{opacity:1}.anim.s1 .a-ses .l1 .g{transform:none}
+.anim.s2 .a-ses .l2{opacity:1}.anim.s2 .a-ses .l2 .g{transform:none}
+.anim.s3 .a-ses .l2{border-color:var(--ok)}.anim.s3 .a-ses .l1{opacity:.5}
+/* 7 · ném vào giữa */
+.a-mid .row{position:absolute;left:4%;right:4%;display:flex;flex-wrap:wrap;gap:6px;align-items:center;opacity:.2}
+.a-mid .r1{top:30px}.a-mid .r2{top:140px}
+.a-mid .st{font-size:.78rem;border:1px solid var(--line-soft);color:var(--muted);padding:.25rem .55rem;border-radius:99px}
+.a-mid .res{flex-basis:100%;font-weight:400;font-size:.85rem;opacity:0}
+.a-mid .bad{color:#e0a07a}.a-mid .good{color:var(--ok)}
+.anim.s1 .a-mid .r1{opacity:1}.anim.s1 .a-mid .r1 .ai{border-color:var(--gold);color:var(--gold-hi)}
+.anim.s2 .a-mid .r1 .res{opacity:1}
+.anim.s3 .a-mid .r2{opacity:1}.anim.s3 .a-mid .r2 .ai{border-color:var(--gold);color:var(--gold-hi);background:rgba(201,169,106,.12)}
+.anim.s4 .a-mid .r2 .res{opacity:1}
+
+</style>
+</head>
+<body>
+
+<nav class="top">
+  <a href="../">← Alex Hayes</a>
+  <span class="prog" id="prog">Bài tập: 0/8</span>
+</nav>
+
+<main class="wrap">
+
+<!-- CHẶNG 0 · MỞ ĐẦU -->
+<section class="stage" id="chang-0">
+  <p class="tag">Claude Code cho người mới · Video 03 <span class="min">· ▶ <a class="t" data-t="0">00:00</a></span></p>
+  <h1>Từ cài đặt tới lúc AI <em>tự dựng xong video</em></h1>
+
+  <figure class="player" id="player">
+    <a class="pv" id="player-link" href="https://www.youtube.com/@Vannam_alexhayes" target="_blank" rel="noopener">
+      <img src="../anh/video03-anh-bia.webp" alt="Ảnh bìa video: Claude Code cho người mới, AI tự dựng video từ 14 đoạn quay" width="1280" height="720">
+      <span class="play" aria-hidden="true"></span>
+    </a>
+    <figcaption id="player-cap">Video sẽ phát ngay tại đây khi lên YouTube. Trong lúc chờ, bấm vào ảnh để mở kênh.</figcaption>
+  </figure>
+
+  <p class="lead">Đây là một buổi hướng dẫn thật qua Google Meet: mình chỉ một người bạn chưa từng dùng Claude Code, từ lúc cài đặt tới lúc AI tự xem 14 đoạn quay, hiểu nội dung và dựng thành 2 video giới thiệu cửa hàng. Trang này đi theo đúng <b>những câu bạn ấy hỏi</b>, viết kỹ hơn video để bạn tự làm lại được.</p>
+  <p class="meta">Video 2 giờ 55 phút · 8 chặng · 8 bài tập · đọc khoảng 25 phút · làm theo khoảng 4–6 giờ, nên chia nhiều buổi · của <a href="#ve-minh">Alex Hayes</a></p>
+  <div class="btns">
+    <a class="btn" href="#chang-1">Bắt đầu chặng 1</a>
+    <a class="btn ghost" id="xem-video" href="https://www.youtube.com/@Vannam_alexhayes" target="_blank" rel="noopener">Mở trên YouTube</a>
+  </div>
+
+  <h3>Kết quả trước, cách làm sau</h3>
+  <p>Video mở đầu bằng thành quả, để bạn biết mình đang đi tới đâu.</p>
+  <figure class="anim" data-anim="4">
+    <div class="ah"><span>Hình minh hoạ · 14 đoạn quay thành 2 video</span><button class="replay" type="button">↺ Xem lại</button></div>
+    <div class="sb a-flow" aria-hidden="true">
+      <div class="clips"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="dir"><span>1 thư mục</span></div>
+      <div class="ai">AI xem · hiểu · cắt ghép</div>
+      <div class="out o1"><b>Bản dài</b><span>1 phút 22</span></div>
+      <div class="out o2"><b>Bản ngắn</b><span>30 giây</span></div>
+    </div>
+    <ol class="caps"><li>Bạn ấy quay 14 đoạn ngắn ở cửa hàng.</li><li>Bỏ cả 14 đoạn vào một thư mục trên máy.</li><li>Claude Code tự mở từng đoạn, nghe lời nói, hiểu nội dung.</li><li>Rồi tự cắt ghép thành 2 bản: dài và ngắn.</li></ol>
+  </figure>
+  <p class="meta">Số liệu trong hình: 14 đoạn, tổng khoảng 3 phút 47 giây, lấy từ lời trong video; độ dài 2 bản đo từ chính 2 file kết quả.</p>
+  <div class="quote"><p>Đây mới chỉ là bước setup để AI hiểu bạn. Từ đây bạn còn cải tiến được rất nhiều, theo cách của bạn.</p></div>
+
+  <div class="howto">
+    <p><b>Cách dùng trang này.</b> Mỗi chặng theo đúng thứ tự trong video: <b>làm gì</b>, <b>vì sao</b>, <b>làm thế nào</b>, <b>kiểm thế nào</b>. Bấm <b>Chép</b>, dán vào Claude Code, rồi sửa phần <span class="hl">[trong ngoặc vuông]</span>. Mốc <b>▶ phút</b> ở đầu mỗi chặng mở đúng đoạn đó trong video.</p>
+    <ul class="levels">
+      <li><b>Mức 1 · Làm theo mẫu</b> (bài 1–3): có sẵn câu lệnh, bạn chép và sửa chỗ trong ngoặc.</li>
+      <li><b>Mức 2 · Có gợi ý</b> (bài 4–6): bạn tự viết câu lệnh, bí thì mở gợi ý.</li>
+      <li><b>Mức 3 · Tự làm</b> (bài 7–8): chỉ có mục tiêu và cách kiểm.</li>
+    </ul>
+    <p class="meta" style="margin-top:.6rem">Bài tập dùng <b>đoạn quay của chính bạn</b> (quay bằng điện thoại là đủ), không cần dữ liệu của mình. Làm xong bài nào thì tích vào ô của bài đó, trình duyệt sẽ nhớ.</p>
+  </div>
+
+  <h3>Chuẩn bị (làm một lần)</h3>
+  <ol class="steps">
+    <li>Tải app Claude cho máy tính ở <a href="https://claude.com/download" target="_blank" rel="noopener">claude.com/download</a> (có bản Windows và Mac, trang tự gợi ý bản hợp máy bạn), cài rồi đăng nhập.</li>
+    <li>Cần gói trả phí (Pro trở lên) để dùng Claude Code. Giá xem ở <a href="https://claude.com/pricing" target="_blank" rel="noopener">claude.com/pricing</a>.</li>
+    <li>Tạo trước một thư mục trống bằng File Explorer (Mac: Finder), ví dụ <span class="hl">[ổ C\AI làm việc]</span>. Trong app chọn thẻ <b>Code</b>, rồi chọn thư mục đó làm <b>thư mục làm việc</b>. Claude chỉ làm việc với file trong thư mục này.</li>
+    <li>Chuẩn bị 5–15 đoạn quay ngắn của bạn (một sản phẩm, một góc làm việc, một món ăn…), bỏ chung vào một thư mục con trong thư mục làm việc, ví dụ <span class="hl">[doan-quay]</span>. Dùng từ chặng 4.</li>
+  </ol>
+  <div class="kn">
+    <span class="h">Thao tác cơ bản trong thẻ Code</span>
+    <ul>
+      <li><b>Gõ / dán câu lệnh:</b> vào ô chat ở dưới cùng màn hình thẻ Code. "Chép" trên trang này rồi bấm vào ô chat, nhấn Ctrl+V (Mac: Cmd+V), rồi Enter.</li>
+      <li><b>Mở phiên mới:</b> nút tạo phiên mới (dấu +) ở cột bên trái. Các phiên cũ vẫn nằm trong danh sách bên trái, bấm vào để quay lại.</li>
+      <li><b>Lệnh có dấu <code>/</code></b> như <code>/memory</code>: cũng gõ vào ô chat đó.</li>
+      <li><b>Nói thay vì gõ:</b> bấm biểu tượng micro trong ô chat (nếu app của bạn có).</li>
+      <li><b>Đưa file hay thư mục cho Claude:</b> nói đường dẫn, ví dụ "đoạn quay nằm trong thư mục doan-quay", hoặc kéo file thả vào ô chat.</li>
+    </ul>
+    <p class="src"><span class="lv no">Chưa xác minh</span> vị trí nút có thể khác theo phiên bản app; mô tả theo app lúc làm video (11/2026).</p>
+  </div>
+  <details class="kn" style="padding:1rem 1.3rem"><summary style="cursor:pointer;color:var(--gold-hi)">Từ cần biết (bấm để mở)</summary>
+    <ul style="margin-top:.6rem">
+      <li><b>Claude Code:</b> Claude làm việc ngay trên máy bạn: tự mở, đọc, tạo, sửa file trong thư mục bạn cho phép.</li>
+      <li><b>Phiên:</b> một cuộc trò chuyện. Mở phiên mới là bắt đầu cuộc trò chuyện mới, Claude không nhớ phiên cũ.</li>
+      <li><b>CLAUDE.md:</b> file chữ ghi bạn là ai và quy tắc làm việc với bạn; Claude đọc nó mỗi phiên.</li>
+      <li><b>Skill:</b> một cách làm việc được đóng gói và đặt tên, để lần sau chỉ cần gọi tên.</li>
+      <li><b>GitHub:</b> trang web nơi mọi người chia sẻ code và skill.</li>
+      <li><b>Lượt dùng (giới hạn):</b> mỗi gói có một mức dùng tối đa trong một khoảng thời gian.</li>
+      <li><b>Huấn luyện AI:</b> công ty dùng dữ liệu chat để dạy mô hình AI giỏi hơn (chặng 5).</li>
+      <li><b>Bên thứ ba:</b> ứng dụng khác nối với Claude, ví dụ Telegram (một app nhắn tin) để giao việc từ điện thoại.</li>
+      <li><b>Khổ 9:16 / 16:9:</b> 9:16 là video dọc (TikTok, Reels), 16:9 là video ngang (YouTube).</li>
+      <li><b>Chuyển giọng nói thành chữ:</b> phần mềm nghe lời trong video rồi ghi ra chữ; nhờ vậy Claude "hiểu" nội dung đoạn quay.</li>
+    </ul>
+  </details>
+  <p class="meta">Chỗ ghi <span class="lv ok">Đã kiểm chứng</span> có link tới tài liệu chính thức của Anthropic. Chỗ ghi <span class="lv no">Chưa xác minh</span> là điều thấy trong video hoặc ý kiến riêng, mình chưa đối chiếu được với tài liệu chính thức.</p>
+
+  <ol class="toc" id="toc">
+    <li><a href="#chang-1">Cài Claude, tạo hồ sơ CLAUDE.md <small>00:48</small></a></li>
+    <li><a href="#chang-2">Mỗi phiên một việc, lấy skill có sẵn <small>13:16</small></a></li>
+    <li><a href="#chang-3">Câu lệnh "giải thích cho tôi" <small>28:24</small></a></li>
+    <li><a href="#chang-4">Đưa khung mẫu, tạo skill dựng video <small>36:03</small></a></li>
+    <li><a href="#chang-5">Quyền riêng tư và lập kế hoạch trước <small>52:25</small></a></li>
+    <li><a href="#chang-6">Nhiều phiên cùng lúc, kịch bản theo mục đích <small>1:04:37</small></a></li>
+    <li><a href="#chang-7">Xem kết quả, sửa, thiết kế trước khi dựng <small>1:50:32</small></a></li>
+    <li><a href="#chang-8">Đóng gói thành skill, hiểu giới hạn dùng <small>2:33:08</small></a></li>
+  </ol>
+</section>
+
+<!-- CHẶNG 1 -->
+<section class="stage" id="chang-1" data-ex="1">
+  <p class="tag">Chặng 1 · Hồ sơ CLAUDE.md <span class="min">· ▶ <a class="t" data-t="48">00:48</a></span></p>
+  <h2>Để Claude biết <em>bạn là ai</em></h2>
+  <p class="q">Câu hỏi trong video: <b>"Biết tôi dùng AI để làm gì chưa, để chỉ cho đúng?"</b></p>
+  <p><b>Làm gì:</b> cho Claude hỏi bạn một loạt câu, rồi tự viết file <code>CLAUDE.md</code> ghi bạn là ai, làm nghề gì, muốn dùng AI vào việc gì.</p>
+  <p><b>Vì sao:</b> câu hỏi trên của người học là câu đúng nhất buổi hôm đó. Muốn AI làm đúng ý thì nó phải biết bạn làm nghề gì và mục tiêu là gì. Mỗi phiên mới Claude không nhớ gì về bạn; thứ nó đọc lại là CLAUDE.md. Bỏ qua bước này thì lần nào bạn cũng phải giới thiệu lại, và Claude đoán cách bạn muốn làm, đoán sai là mất công sửa.</p>
+
+  <figure class="anim" data-anim="4">
+    <div class="ah"><span>Hình minh hoạ · CLAUDE.md như "chứng minh thư"</span><button class="replay" type="button">↺ Xem lại</button></div>
+    <div class="sb a-mem" aria-hidden="true">
+      <div class="bar"><i></i><i></i><i></i><span class="t1">Phiên hôm qua</span><span class="t2">Phiên mới</span></div>
+      <div class="bub u">Mình bán xe điện, muốn làm video giới thiệu cửa hàng.</div>
+      <div class="bub c forget">Xin chào! Bạn là ai, mình giúp gì được?</div>
+      <div class="mdcard"><b>CLAUDE.md</b><span># Về tôi</span><span>- Bán xe điện…</span><span># Quy tắc</span></div>
+      <div class="bub c hello">Chào bạn! Hôm nay dựng video cửa hàng tiếp nhé?</div>
+    </div>
+    <ol class="caps"><li>Hôm qua bạn kể về mình cho Claude.</li><li>Hôm nay mở phiên mới: Claude không nhớ gì.</li><li>Bạn có sẵn file CLAUDE.md.</li><li>Phiên mới đọc file đó trước, nên hiểu bạn ngay.</li></ol>
+  </figure>
+
+  <div class="kn">
+    <span class="h">Kiến thức cần biết</span>
+    <ul>
+      <li>CLAUDE.md được nạp <b>tự động mỗi phiên</b>. Gõ <code>/memory</code> để xem Claude đang nạp file nhớ nào.</li>
+      <li>Anthropic khuyên giữ CLAUDE.md <b>dưới 200 dòng</b>; file càng dài Claude càng làm theo kém. Mới bắt đầu thì 30–50 dòng là đủ.</li>
+      <li>CLAUDE.md là <b>lời dặn</b>, không phải luật cứng: Claude thường làm theo nhưng không bị bắt buộc.</li>
+      <li>Trong video, Claude Code còn được cho phép <b>vào thẳng máy tính</b>: tự tìm file bạn cần, bạn không phải gửi từng file như khi chat thường.</li>
+    </ul>
+    <p class="src"><span class="lv ok">Đã kiểm chứng</span> 3 ý đầu: tài liệu Claude Code mục <a href="https://code.claude.com/docs/en/memory" target="_blank" rel="noopener">Memory</a> và <a href="https://code.claude.com/docs/en/features-overview" target="_blank" rel="noopener">Features overview</a>, tra ngày 23/11/2026. <span class="lv no">Chưa xác minh</span> ý 4: mô tả theo những gì thấy trong video.</p>
+  </div>
+
+  <h3>Cách 1 · Để Claude phỏng vấn bạn</h3>
+  <div class="pr"><header><b>P01</b><span>Claude hỏi từng câu rồi viết CLAUDE.md</span><button class="copy" data-copy>Chép</button></header>
+<pre>Mình là người mới dùng Claude Code. Hãy hỏi mình lần lượt từng câu, mỗi lần một câu, để hiểu: tên và cách gọi mình, nghề nghiệp, mình muốn dùng AI vào việc gì (ví dụ <span class="hl">[làm video giới thiệu sản phẩm]</span>), loại file hay dùng, kiểu trả lời mình thích, và những điều mình không muốn bạn tự làm. Hỏi xong, viết file CLAUDE.md dưới 50 dòng, chia 3 phần: Về tôi, Việc tôi đang làm, Quy tắc làm việc.</pre></div>
+  <p class="meta"><span class="lv no">Chưa xác minh</span> trong video người học dùng bộ câu hỏi mình gửi sẵn; câu lệnh này là bản viết lại cho bạn, chưa chạy thử nguyên văn.</p>
+
+  <h3>Cách 2 · Tự điền, trang ghép câu lệnh cho bạn</h3>
+  <p>Những gì bạn gõ chỉ nằm trên trình duyệt của bạn, không gửi đi đâu.</p>
+  <div class="form two" id="f01">
+    <label>Tên và cách muốn được gọi<input data-k="Tên và cách gọi" placeholder="Lan, gọi là chị Lan"></label>
+    <label>Nghề nghiệp<input data-k="Nghề nghiệp" placeholder="Bán xe điện, có 2 cửa hàng"></label>
+    <label>Muốn dùng AI vào việc gì<textarea data-k="Mục tiêu dùng AI" placeholder="Làm video ngắn giới thiệu sản phẩm, đăng Facebook và TikTok"></textarea></label>
+    <label>Loại file hay dùng<textarea data-k="File hay dùng" placeholder="Video quay bằng điện thoại, ảnh sản phẩm"></textarea></label>
+    <label>Kiểu trả lời bạn thích<textarea data-k="Kiểu trả lời" placeholder="Tiếng Việt, đơn giản, không dùng thuật ngữ"></textarea></label>
+    <label>Điều không muốn Claude tự làm<textarea data-k="Quy tắc" placeholder="Không xoá file. Hỏi trước khi làm việc tốn tiền."></textarea></label>
+  </div>
+  <div class="btns"><button class="btn" id="f01-go" type="button">Ghép câu lệnh</button></div>
+  <div class="pr" id="f01-out" hidden><header><b>F01</b><span>Câu lệnh từ form của bạn</span><button class="copy" data-copy>Chép</button></header><pre></pre></div>
+
+  <p><b>Kiểm thế nào:</b> mở phiên mới, hỏi "Mình là ai và mình muốn dùng AI vào việc gì?". Claude trả lời đúng mà bạn không phải kể lại.</p>
+
+  <div class="ex">
+    <span class="h">Bài tập 1 · khoảng 20 phút</span>
+    <span class="lvl">Mức 1 · Làm theo mẫu</span>
+    <ol>
+      <li>Mở app Claude, thẻ Code, chọn thư mục làm việc.</li>
+      <li>Dùng P01 hoặc form F01 để Claude viết CLAUDE.md.</li>
+      <li>Đóng phiên, mở phiên mới, gõ <code>/memory</code>.</li>
+      <li>Hỏi: "Mình là ai, và mình muốn dùng AI vào việc gì?"</li>
+    </ol>
+    <p class="xong"><b>Xong khi:</b> phiên mới trả lời đúng nghề và mục tiêu của bạn; file CLAUDE.md dưới 50 dòng.</p>
+    <label class="check"><input type="checkbox" data-ex-box="1"> Mình đã làm xong bài tập 1</label>
+  </div>
+</section>
+
+<!-- CHẶNG 2 -->
+<section class="stage" id="chang-2" data-ex="2">
+  <p class="tag">Chặng 2 · Phiên và skill <span class="min">· ▶ <a class="t" data-t="796">13:16</a></span></p>
+  <h2>Mỗi phiên một việc, <em>đứng trên vai người đi trước</em></h2>
+  <p class="q">Câu hỏi trong video: <b>"Học cái này mất bao lâu?"</b> và <b>"Biết sớm hơn thì đồ án tốt nghiệp làm được hết nhỉ?"</b></p>
+  <p><b>Làm gì:</b> tập hai thói quen. (1) Xong một việc thì mở phiên mới. (2) Lấy skill người khác đã viết sẵn (ví dụ skill dựng video) về máy, rồi chỉnh thành của mình.</p>
+  <p><b>Vì sao:</b> mỗi tin nhắn mới trong một phiên, Claude đọc lại cả cuộc trò chuyện từ đầu. Phiên càng dài càng tốn lượt dùng và Claude càng dễ lẫn. Còn skill: rất nhiều việc đã có người làm trước và chia sẻ trên GitHub; lấy về rồi cải tiến nhanh hơn nhiều so với dạy từ số 0. Về câu "học bao lâu": trong video mình nói mình đã livestream khoảng 80–90 giờ làm việc với AI, bắt đầu từ con số 0, và bước setup ban đầu là bước tốn công nhất.</p>
+
+  <figure class="anim" data-anim="3">
+    <div class="ah"><span>Hình minh hoạ · Một phiên dài và nhiều phiên ngắn</span><button class="replay" type="button">↺ Xem lại</button></div>
+    <div class="sb a-ses" aria-hidden="true">
+      <div class="lane l1"><span>1 phiên làm 4 việc</span><i class="g g1"></i><i class="g g2"></i><i class="g g3"></i><i class="g g4"></i><em>đọc lại từ đầu mỗi lần</em></div>
+      <div class="lane l2"><span>4 phiên, mỗi phiên 1 việc</span><i class="g g1"></i><i class="g g2"></i><i class="g g3"></i><i class="g g4"></i><em>mỗi phiên chỉ đọc việc của nó</em></div>
+    </div>
+    <ol class="caps"><li>Làm cả 4 việc trong một phiên: phần phải đọc lại cứ dài ra.</li><li>Tách mỗi việc một phiên: phần phải đọc luôn ngắn.</li><li>Ít lượt dùng hơn, Claude ít bị lẫn việc này với việc kia.</li></ol>
+  </figure>
+
+  <div class="kn">
+    <span class="h">Kiến thức cần biết</span>
+    <ul>
+      <li>Skill là một thư mục có file <code>SKILL.md</code> (thường nằm trong <code>.claude/skills/[tên skill]/</code>). Claude chỉ đọc phần mô tả ngắn lúc đầu, khi cần mới đọc toàn bộ, nên có nhiều skill cũng không tốn chỗ.</li>
+      <li>Lượt dùng của Claude và Claude Code là <b>chung một hạn mức</b>.</li>
+      <li>Chỉ cài skill từ nguồn bạn tin. Skill có thể chứa lệnh chạy trên máy bạn: đọc mô tả, xem ai làm, bao nhiêu người dùng trước khi cài.</li>
+    </ul>
+    <p class="src"><span class="lv ok">Đã kiểm chứng</span> ý 1: <a href="https://code.claude.com/docs/en/features-overview" target="_blank" rel="noopener">Features overview</a>; ý 2: <a href="https://support.claude.com/en/articles/11647753-how-do-usage-and-length-limits-work" target="_blank" rel="noopener">How do usage and length limits work</a>, tra ngày 23/11/2026. Ý 3 là lời khuyên của mình.</p>
+  </div>
+
+  <div class="pr"><header><b>P02</b><span>Tìm và cài skill dựng video</span><button class="copy" data-copy>Chép</button></header>
+<pre>Mình muốn dùng Claude Code để dựng video ngắn từ các đoạn quay điện thoại. Hãy tìm trên GitHub những skill dựng video được nhiều người dùng và tin tưởng nhất. Skill cần biết nghe lời nói trong video (chuyển giọng nói thành chữ) để hiểu nội dung từng đoạn. Liệt kê 3–5 skill: mỗi skill làm được gì, ai làm, bao nhiêu sao, cần cài thêm phần mềm gì, cài có rủi ro gì. Đề xuất skill hợp nhất với mình và giải thích vì sao. CHƯA cài gì cho tới khi mình đồng ý.</pre></div>
+  <p class="meta">Vì sao có câu "chưa cài gì": cài phần mềm là việc khó gỡ, bạn nên tự quyết. <span class="lv no">Chưa xác minh</span> trong video mình đã cài sẵn bộ công cụ cho người học; câu lệnh này là cách để bạn tự làm.</p>
+
+  <p><b>Kiểm thế nào:</b> bạn có danh sách skill kèm lý do; sau khi đồng ý cài, hỏi "Bạn đang có những skill nào?" và thấy tên skill vừa cài.</p>
+
+  <div class="ex">
+    <span class="h">Bài tập 2 · khoảng 30 phút</span>
+    <span class="lvl">Mức 1 · Làm theo mẫu</span>
+    <ol>
+      <li>Mở <b>phiên mới</b> (đừng làm tiếp trong phiên của bài 1).</li>
+      <li>Chép P02, đọc kỹ danh sách Claude đưa, chọn một skill.</li>
+      <li>Cho Claude cài, rồi mở phiên mới và hỏi "Bạn đang có những skill nào?"</li>
+    </ol>
+    <p class="xong"><b>Xong khi:</b> phiên mới liệt kê được skill dựng video bạn vừa cài.</p>
+    <label class="check"><input type="checkbox" data-ex-box="2"> Mình đã làm xong bài tập 2</label>
+  </div>
+</section>
+
+<!-- CHẶNG 3 -->
+<section class="stage" id="chang-3" data-ex="3">
+  <p class="tag">Chặng 3 · Học cùng AI <span class="min">· ▶ <a class="t" data-t="1704">28:24</a></span></p>
+  <h2>Nói thật là mình mới, <em>bắt nó giải thích</em></h2>
+  <p><b>Làm gì:</b> sau mỗi phiên, yêu cầu Claude giải thích lại từ đầu tới cuối mình vừa làm gì, bằng lời đơn giản. Thấy điều gì không thích thì bảo nó ghi thành quy tắc trong CLAUDE.md.</p>
+  <p><b>Vì sao:</b> người mới thường chỉ bấm "đồng ý" mà không hiểu máy đang làm gì; tới lúc hỏng thì không biết sửa ở đâu. Trong video mình nói: AI vừa là công cụ, vừa là thầy dạy cách dùng chính nó; có gì băn khoăn cứ hỏi nó. Còn quy tắc: nhắc một điều nhiều lần mà không ghi lại thì phiên sau nó lại quên.</p>
+
+  <div class="pr"><header><b>P03</b><span>Bắt Claude giải thích phiên vừa làm</span><button class="copy" data-copy>Chép</button></header>
+<pre>Mình là người mới, chưa hiểu hết những gì vừa làm. Hãy giải thích cho mình từ đầu tới cuối phiên này: đã làm những việc gì, theo thứ tự nào, vì sao phải làm vậy, và mình học được gì. Đừng dùng thuật ngữ; nếu buộc phải dùng thì giải thích ngay. Cuối cùng cho mình 3 câu hỏi để tự kiểm xem mình đã hiểu chưa.</pre></div>
+  <div class="pr"><header><b>P04</b><span>Biến điều không thích thành quy tắc</span><button class="copy" data-copy>Chép</button></header>
+<pre>Thêm quy tắc này vào CLAUDE.md: <span class="hl">[từ lần sau, trả lời mình ngắn gọn, kết luận trước]</span>. Đọc lại cho mình dòng bạn vừa thêm.</pre></div>
+  <div class="kn">
+    <span class="h">Kiến thức cần biết</span>
+    <ul>
+      <li>Nói "hãy nhớ…" thì Claude có thể lưu vào trí nhớ tự động của nó; muốn chắc là vào CLAUDE.md thì nói rõ "thêm vào CLAUDE.md".</li>
+      <li>Nói chuyện bằng mic (giọng nói) nhanh hơn gõ nhiều lần; nói rời rạc nó vẫn tóm được ý và hỏi lại cho chắc.</li>
+    </ul>
+    <p class="src"><span class="lv ok">Đã kiểm chứng</span> ý 1: <a href="https://code.claude.com/docs/en/memory" target="_blank" rel="noopener">Memory</a>, tra 23/11/2026. <span class="lv no">Chưa xác minh</span> ý 2: kinh nghiệm trong video.</p>
+  </div>
+  <p><b>Kiểm thế nào:</b> bạn trả lời được 3 câu hỏi tự kiểm; mở phiên mới thì Claude làm đúng quy tắc vừa thêm.</p>
+
+  <div class="ex">
+    <span class="h">Bài tập 3 · khoảng 15 phút</span>
+    <span class="lvl">Mức 1 · Làm theo mẫu</span>
+    <ol>
+      <li>Bấm vào phiên của bài 2 trong danh sách bên trái (giải thích phiên vừa làm là phần cuối của chính việc đó, nên làm trong phiên đó), chép P03.</li>
+      <li>Trả lời 3 câu hỏi Claude đưa ra; câu nào sai thì hỏi lại.</li>
+      <li>Chọn một điều bạn chưa thích ở cách Claude trả lời, dùng P04 để ghi thành quy tắc.</li>
+    </ol>
+    <p class="xong"><b>Xong khi:</b> bạn trả lời đúng ít nhất 2/3 câu và CLAUDE.md có thêm 1 dòng quy tắc của bạn.</p>
+    <label class="check"><input type="checkbox" data-ex-box="3"> Mình đã làm xong bài tập 3</label>
+  </div>
+</section>
+
+<!-- CHẶNG 4 -->
+<section class="stage" id="chang-4" data-ex="4">
+  <p class="tag">Chặng 4 · Khung mẫu <span class="min">· ▶ <a class="t" data-t="2163">36:03</a></span></p>
+  <h2>Đưa nó một video mẫu, <em>nó học cách bạn làm</em></h2>
+  <p class="q">Câu hỏi trong video: <b>"Kết nối bên thứ ba có phải nâng cấp bản đắt hơn không?"</b></p>
+  <p><b>Làm gì:</b> gửi cho Claude 1–3 video mẫu bạn thích (link hoặc file), bảo nó phân tích rồi tạo một skill "dựng video ngắn" theo khung đó.</p>
+  <p><b>Vì sao:</b> trong video mình nói đây là đoạn mất thời gian nhất nếu làm không có mẫu. Có khung mẫu thì Claude biết bạn muốn mở đầu ra sao, chữ trên hình thế nào, dài bao lâu; không có thì nó làm theo kiểu của nó và bạn phải sửa đi sửa lại. Về câu hỏi bên thứ ba: theo mình nói trong video, kết nối thêm (ví dụ nhắn việc qua Telegram) là thêm công cụ, không phải mua bản cao hơn.</p>
+  <div class="kn">
+    <span class="h">Kiến thức cần biết</span>
+    <ul>
+      <li>Trong video, người học bật quyền cho Claude <b>dùng máy tính</b> (Cài đặt của app, mục Hệ thống / tính năng dùng máy tính), nên nó tự mở Zalo, thư mục Tải về để tìm video mẫu. Khi đang dùng máy, app hiện khung báo; bạn có thể dừng bất cứ lúc nào.</li>
+      <li><b>Không bắt buộc:</b> bạn có thể không bật quyền này, chỉ cần dán link video mẫu hoặc kéo file vào ô chat.</li>
+      <li>Kết nối bên thứ ba (như Telegram) không cần đổi gói.</li>
+    </ul>
+    <p class="src"><span class="lv no">Chưa xác minh</span> cả 3 ý: mô tả theo video (máy Windows), mình chưa đối chiếu tài liệu chính thức.</p>
+  </div>
+  <div class="err"><span class="h">Lưu ý an toàn</span><p>Nếu bật cho Claude dùng máy tính: nó nhìn thấy mọi cửa sổ đang mở. Tắt Zalo, email, ngân hàng và mọi thứ riêng tư trước; chỉ để mở đúng thư mục cần dùng. Không chắc thì đừng bật, dán link là đủ.</p></div>
+  <h3>Ghép câu lệnh tạo skill dựng video</h3>
+  <div class="form two" id="f02">
+    <label>Video mẫu ở đâu<input data-k="mau" placeholder="Link TikTok hoặc thư mục Tải về\video-mau"></label>
+    <label>Loại video bạn muốn<input data-k="loai" placeholder="Giới thiệu sản phẩm, 30–60 giây, dọc"></label>
+    <label>Đoạn quay của bạn ở đâu<input data-k="clip" placeholder="Thư mục video-cua-hang"></label>
+    <label>Điều bạn thích ở video mẫu<textarea data-k="thich" placeholder="Chữ to ở giữa, cắt nhanh, có logo góc trên"></textarea></label>
+  </div>
+  <div class="pr"><header><b>F02</b><span>Câu lệnh tự ghép khi bạn gõ</span><button class="copy" data-copy>Chép</button></header><pre id="f02-out">Điền các ô ở trên…</pre></div>
+  <p><b>Kiểm thế nào:</b> Claude tả lại được khung của video mẫu (mở đầu, giữa, kết, chữ, độ dài) đúng như bạn thấy, và có một skill mới mang tên bạn đặt.</p>
+  <div class="ex">
+    <span class="h">Bài tập 4 · khoảng 40 phút</span>
+    <span class="lvl">Mức 2 · Có gợi ý</span>
+    <ol>
+      <li>Chọn 1–3 video ngắn bạn thích trên mạng.</li>
+      <li>Tự viết câu lệnh nhờ Claude phân tích khung và tạo skill dựng video.</li>
+      <li>Đọc lại phần phân tích; chỗ nào sai thì sửa trước khi đồng ý.</li>
+    </ol>
+    <details><summary>Gợi ý nếu bí</summary>Câu lệnh nên có: video mẫu ở đâu, bạn muốn loại video gì, bạn thích điều gì ở mẫu, và yêu cầu "tạo thành skill dựng video ngắn cho tôi". Form F02 ở trên ghép sẵn cho bạn.</details>
+    <p class="xong"><b>Xong khi:</b> có một skill dựng video mới, và phần mô tả khung khớp với video mẫu ở ít nhất 4 điểm (mở đầu, chữ, độ dài, kết).</p>
+    <label class="check"><input type="checkbox" data-ex-box="4"> Mình đã làm xong bài tập 4</label>
+  </div>
+</section>
+
+<!-- CHẶNG 5 -->
+<section class="stage" id="chang-5" data-ex="5">
+  <p class="tag">Chặng 5 · Riêng tư và kế hoạch <span class="min">· ▶ <a class="t" data-t="3145">52:25</a></span></p>
+  <h2>Tắt chia sẻ dữ liệu, <em>lập kế hoạch</em> trước khi làm</h2>
+  <p class="q">Câu hỏi trong video: <b>"Vì sao chọn Claude thay vì ChatGPT?"</b></p>
+  <p><b>Làm gì:</b> (1) Vào Cài đặt → Quyền riêng tư, xem và quyết định có cho dùng dữ liệu chat của bạn để huấn luyện AI hay không. (2) Trước mỗi việc lớn, bật chế độ lập kế hoạch để Claude trình bày cách làm cho bạn duyệt.</p>
+  <p><b>Vì sao:</b> bạn sẽ đưa vào đó file công việc, video cửa hàng, có khi cả thông tin khách. Nên biết dữ liệu được giữ bao lâu. Còn kế hoạch: duyệt cách làm trước thì đỡ phải làm lại; để nó chạy thẳng thì sai từ bước đầu là hỏng cả việc. Về câu "vì sao Claude": trong video mình trả lời theo ý riêng là mô hình mạnh và mình thích cách nó tôn trọng quyền riêng tư.</p>
+  <div class="kn">
+    <span class="h">Kiến thức cần biết</span>
+    <ul>
+      <li>Tài khoản cá nhân (Free, Pro, Max): nếu <b>cho phép</b> dùng dữ liệu để huấn luyện, dữ liệu chat mới có thể được giữ tới <b>5 năm</b>; nếu <b>không cho phép</b>, giữ <b>30 ngày</b>. Quy định này không áp dụng cho gói Team, Enterprise.</li>
+      <li>Xoá một cuộc trò chuyện thì nó không được dùng để huấn luyện về sau.</li>
+      <li>"Claude giỏi hơn ChatGPT" là ý kiến của mình trong video, không phải phép đo.</li>
+    </ul>
+    <p class="src"><span class="lv ok">Đã kiểm chứng</span> ý 1–2: <a href="https://www.anthropic.com/news/updates-to-our-consumer-terms" target="_blank" rel="noopener">Updates to Consumer Terms and Privacy Policy</a> và <a href="https://privacy.claude.com/en/articles/10023548-how-long-do-you-store-my-data" target="_blank" rel="noopener">How long do you store my data?</a>, tra 23/11/2026. <span class="lv no">Chưa xác minh</span> ý 3 (ý kiến). Tên nút trong app có thể khác theo phiên bản.</p>
+  </div>
+  <p><b>Kiểm thế nào:</b> bạn biết nút "Giúp cải thiện…" đang bật hay tắt và đã tự chọn; lần làm việc lớn tiếp theo, Claude đưa kế hoạch trước khi làm.</p>
+  <div class="ex">
+    <span class="h">Bài tập 5 · khoảng 15 phút</span>
+    <span class="lvl">Mức 2 · Có gợi ý</span>
+    <ol>
+      <li>Tự tìm trong Cài đặt của app mục quyền riêng tư và nút cho phép dùng dữ liệu để huấn luyện. Quyết định bật hay tắt.</li>
+      <li>Mở phiên mới, bật chế độ lập kế hoạch, giao một việc nhỏ (ví dụ "đặt lại tên các đoạn quay theo nội dung").</li>
+      <li>Đọc kế hoạch, sửa ít nhất 1 điểm rồi mới cho làm.</li>
+    </ol>
+    <details><summary>Gợi ý nếu bí</summary>Mục nằm trong Cài đặt, phần Quyền riêng tư (Privacy). Chế độ lập kế hoạch: trong video là nút cạnh chữ "Tự động" ở ô chat. Nếu không thấy, hỏi Claude: "Làm sao để bạn trình bày kế hoạch cho mình duyệt trước khi làm?"</details>
+    <p class="xong"><b>Xong khi:</b> bạn đã tự chọn bật/tắt, và có một kế hoạch bạn đã sửa trước khi Claude làm.</p>
+    <label class="check"><input type="checkbox" data-ex-box="5"> Mình đã làm xong bài tập 5</label>
+  </div>
+</section>
+
+<!-- CHẶNG 6 -->
+<section class="stage" id="chang-6" data-ex="6">
+  <p class="tag">Chặng 6 · Nhiều phiên, đúng mục đích <span class="min">· ▶ <a class="t" data-t="3877">1:04:37</a></span></p>
+  <h2>Hai việc chạy song song, <em>kịch bản đúng mục đích</em></h2>
+  <p class="q">Câu hỏi trong video: <b>"Mỗi lần như thế có phải mở phiên khác không?"</b></p>
+  <p><b>Làm gì:</b> mở 2 phiên cạnh nhau: một phiên viết kịch bản, một phiên đang dựng thử video. Khi viết kịch bản, nói rõ <b>dùng để làm gì</b>: để quay video hay để đăng bài chữ.</p>
+  <p><b>Vì sao:</b> dựng video mất 10–30 phút; ngồi chờ là phí. Trả lời câu hỏi trên: việc mới, mục đích mới thì mở phiên mới; còn đang cùng một việc (ví dụ đưa thêm video mẫu cho skill kịch bản) thì làm tiếp trong phiên đó. Kịch bản để quay cần lời nói, câu mở đầu giữ người xem, cảnh quay; kịch bản để đăng Facebook thì khác hẳn. Không nói mục đích, Claude sẽ đoán.</p>
+  <div class="pr"><header><b>P05</b><span>Kịch bản theo mục đích</span><button class="copy" data-copy>Chép</button></header>
+<pre>Viết giúp mình 3 kịch bản video <span class="hl">[giới thiệu sản phẩm]</span> dài <span class="hl">[30–60 giây]</span>, để mình TỰ QUAY rồi đăng <span class="hl">[TikTok, Facebook]</span>. Mỗi kịch bản có: câu mở đầu giữ người xem trong 3 giây đầu, lời nói từng câu, cảnh quay đi kèm mỗi câu, câu kết. Dựa vào thông tin: <span class="hl">[sản phẩm, điểm mạnh, giá, địa chỉ]</span>. Thêm 1 kịch bản bạn tự nghĩ để có nhiều lượt xem nhất, và nói vì sao.</pre></div>
+  <div class="kn">
+    <span class="h">Kiến thức cần biết</span>
+    <ul>
+      <li>Trong app có thể kéo một phiên ra cửa sổ riêng và xếp cạnh nhau (Windows: phím Windows + mũi tên trái/phải).</li>
+      <li>Trong video thấy: khi một việc đang chạy tự động mà bạn hỏi thêm, Claude có thể giao câu hỏi cho một "trợ lý" khác trả lời, việc cũ vẫn chạy.</li>
+    </ul>
+    <p class="src"><span class="lv no">Chưa xác minh</span> cả 2 ý: theo những gì thấy trong video.</p>
+  </div>
+  <p><b>Kiểm thế nào:</b> 2 phiên cùng chạy, mỗi phiên một việc; mỗi kịch bản có lời nói và cảnh quay cho từng câu.</p>
+  <div class="ex">
+    <span class="h">Bài tập 6 · khoảng 30 phút</span>
+    <span class="lvl">Mức 2 · Có gợi ý</span>
+    <ol>
+      <li>Phiên 1: gõ "Dùng skill dựng video vừa tạo, dựng thử một video từ các đoạn quay trong thư mục <span class="hl">[doan-quay]</span>".</li>
+      <li>Trong lúc chờ, phiên 2: tự viết câu lệnh xin 3 kịch bản cho sản phẩm của bạn, nói rõ mục đích.</li>
+      <li>Chọn kịch bản bạn ưng nhất.</li>
+    </ol>
+    <details><summary>Gợi ý nếu bí</summary>Câu lệnh cần: loại video, độ dài, đăng ở đâu, tự quay hay không, thông tin sản phẩm, và "mỗi câu nói kèm cảnh quay". Mẫu là P05.</details>
+    <p class="xong"><b>Xong khi:</b> có 1 bản dựng thử và 1 kịch bản bạn chọn, làm song song trong 2 phiên.</p>
+    <label class="check"><input type="checkbox" data-ex-box="6"> Mình đã làm xong bài tập 6</label>
+  </div>
+</section>
+
+<!-- CHẶNG 7 -->
+<section class="stage" id="chang-7" data-ex="7">
+  <p class="tag">Chặng 7 · Sửa và thiết kế <span class="min">· ▶ <a class="t" data-t="6632">1:50:32</a></span></p>
+  <h2>Đừng ném AI vào giữa, <em>làm cùng nó từ đầu</em></h2>
+  <p><b>Làm gì:</b> xem bản dựng thử, nói rõ chỗ nào chưa tốt (ví dụ logo sai: gửi logo thật). Rồi trước khi dựng bản chính, bắt Claude lên <b>kế hoạch thiết kế cho từng câu nói</b> trong kịch bản: câu này hiện chữ gì, hình gì, hiệu ứng gì. Duyệt xong mới cho dựng.</p>
+  <p><b>Vì sao:</b> đây là điểm mình nhấn mạnh nhất video. Nhiều người bảo AI edit mà không ưng, vì họ đưa nó vào giữa việc: nó không biết kịch bản, không biết mục đích, nên chỉ đoán. Làm cùng nó từ kịch bản → thiết kế → dựng thì kết quả đi đúng hướng ngay, và lần sau nó làm y như vậy.</p>
+  <figure class="anim" data-anim="4">
+    <div class="ah"><span>Hình minh hoạ · Ném vào giữa và làm từ đầu</span><button class="replay" type="button">↺ Xem lại</button></div>
+    <div class="sb a-mid" aria-hidden="true">
+      <div class="row r1"><span class="st">Kịch bản</span><span class="st">Thiết kế</span><span class="st ai">Dựng</span><b class="res bad">Không ưng, sửa lại</b></div>
+      <div class="row r2"><span class="st ai">Kịch bản</span><span class="st ai">Thiết kế</span><span class="st ai">Dựng</span><b class="res good">Đúng ý ngay</b></div>
+    </div>
+    <ol class="caps"><li>Cách 1: tự làm kịch bản, thiết kế, chỉ đưa AI bước dựng.</li><li>AI không biết ý đồ, kết quả phải sửa đi sửa lại.</li><li>Cách 2: làm cùng AI từ kịch bản, duyệt từng bước.</li><li>Bước dựng chỉ còn làm theo những gì đã duyệt.</li></ol>
+  </figure>
+  <div class="pr"><header><b>P06</b><span>Kế hoạch thiết kế cho từng câu nói</span><button class="copy" data-copy>Chép</button></header>
+<pre>Dựa vào kịch bản <span class="hl">[tên kịch bản]</span> mình đã chọn, hãy lên kế hoạch dựng video cho TỪNG câu nói: câu đó hiện chữ gì trên hình, hình minh hoạ hoặc cảnh quay nào, hiệu ứng gì, dài bao nhiêu giây, và vì sao. Trình bày thành bảng để mình duyệt. CHƯA dựng cho tới khi mình đồng ý. Logo thật của mình ở <span class="hl">[đường dẫn file logo]</span>.</pre></div>
+  <div class="err">
+    <span class="h">Lỗi hay gặp (trong video)</span>
+    <dl>
+      <dt>Logo trên video bị sai</dt><dd>Claude không có logo thật nên tự vẽ. Gửi file logo, nói rõ "giữ nguyên màu và chữ, chỉ cắt nền".</dd>
+      <dt>Video quay ngang bị lỗi khung</dt><dd>Nói rõ khổ video bạn muốn (dọc 9:16 hay ngang 16:9) ngay trong kế hoạch.</dd>
+    </dl>
+  </div>
+  <div class="ex">
+    <span class="h">Bài tập 7 · khoảng 60 phút</span>
+    <span class="lvl">Mức 3 · Tự làm</span>
+    <p>Từ kịch bản bài 6: có kế hoạch thiết kế từng câu, bạn duyệt, rồi cho dựng.</p>
+    <details><summary>Cần những gì</summary>Kịch bản đã chọn, đoạn quay khớp kịch bản, logo hoặc ảnh sản phẩm thật, và một bước duyệt trước khi dựng.</details>
+    <p class="xong"><b>Xong khi:</b> có bảng kế hoạch bạn đã sửa ít nhất 1 dòng, và video dựng ra đúng bảng đó.</p>
+    <label class="check"><input type="checkbox" data-ex-box="7"> Mình đã làm xong bài tập 7</label>
+  </div>
+</section>
+
+<!-- CHẶNG 8 -->
+<section class="stage" id="chang-8" data-ex="8">
+  <p class="tag">Chặng 8 · Đóng gói và giới hạn <span class="min">· ▶ <a class="t" data-t="9188">2:33:08</a></span></p>
+  <h2>Gom bài học thành skill, <em>lần sau chỉ cần một câu</em></h2>
+  <p><b>Làm gì:</b> khi đã có một video bạn ưng, bảo Claude gom mọi điều bạn đã dạy trong phiên thành skill. Lần sau chỉ cần: "Dựng video này cho mình".</p>
+  <p><b>Vì sao:</b> những gì bạn sửa trong phiên sẽ mất khi đóng phiên, trừ khi được ghi lại. Đóng gói thành skill là ghi lại cả quy trình: kịch bản → kế hoạch thiết kế → dựng. Lần đầu tốn vài giờ; từ lần sau nhanh hơn nhiều.</p>
+  <div class="pr"><header><b>P07</b><span>Đóng gói thành skill</span><button class="copy" data-copy>Chép</button></header>
+<pre>Gom tất cả những gì bạn vừa học trong phiên này, và mọi yêu cầu của mình, thành một skill tên <span class="hl">[dung-video-cua-hang]</span>: các bước từ kịch bản, kế hoạch thiết kế từng câu, tới dựng và xuất video. Ghi rõ những gì mình đã duyệt và những lỗi đã sửa (ví dụ logo). Viết mô tả nói rõ khi nào dùng skill này. Lưu ở chỗ để mọi phiên mới đều dùng được, và nói cho mình biết đã lưu ở đâu. Đọc lại cho mình các bước trước khi lưu.</pre></div>
+  <div class="kn">
+    <span class="h">Kiến thức cần biết: giới hạn dùng</span>
+    <ul>
+      <li>Gói Pro có <b>giới hạn theo khung 5 giờ</b> (đừng nhầm với "phiên" trò chuyện: khung này tính từ tin nhắn đầu tiên của bạn, hết 5 giờ thì đặt lại) và <b>giới hạn theo tuần</b>. Xem giờ đặt lại trong Cài đặt của app (bấm tên/ảnh của bạn ở góc dưới bên trái) → mục Usage (Mức sử dụng).</li>
+      <li>Hết lượt thì không mất gì: chờ tới giờ đặt lại là dùng tiếp.</li>
+      <li>Phiên càng dài càng tốn lượt, vì mỗi tin nhắn mới đọc lại cả phiên. Lý do nữa để "xong việc là mở phiên mới".</li>
+    </ul>
+    <p class="src"><span class="lv ok">Đã kiểm chứng</span> ý 1–2: <a href="https://support.claude.com/en/articles/11647753-how-do-usage-and-length-limits-work" target="_blank" rel="noopener">How do usage and length limits work</a>, tra 23/11/2026; con số có thể đổi, xem lại trang này. <span class="lv no">Chưa xác minh</span> ý 3: giải thích theo video.</p>
+  </div>
+  <p><b>Kiểm thế nào:</b> mở phiên mới, đưa đoạn quay mới, chỉ nói "dựng video này cho mình" mà Claude tự đi đúng quy trình của bạn.</p>
+  <div class="ex">
+    <span class="h">Bài tập 8 · bài cuối · khoảng 60 phút</span>
+    <span class="lvl">Mức 3 · Tự làm</span>
+    <p>Đóng gói quy trình thành skill, rồi dùng nó dựng một video 30 giây từ <b>5 đoạn quay mới</b> của bạn, không giải thích lại từ đầu.</p>
+    <details><summary>Cần những gì</summary>Một phiên có video bạn đã ưng (bài 7), câu lệnh đóng gói, phiên mới, 5 đoạn quay mới.</details>
+    <p class="xong"><b>Xong khi:</b> có video 30 giây mới, trong phiên mới bạn chỉ phải duyệt kịch bản và kế hoạch, không phải dạy lại cách làm.</p>
+    <label class="check"><input type="checkbox" data-ex-box="8"> Mình đã làm xong bài tập 8</label>
+  </div>
+  <p>Xem xong video và làm hết 8 bài, bạn đã đi đủ một vòng: Claude biết bạn là ai, có skill của riêng bạn, và tự dựng được video theo cách bạn muốn. Từ đây, mỗi lần chưa ưng chỗ nào, bạn chỉ cần nói với nó để skill tốt lên dần.</p>
+</section>
+
+<!-- VỀ MÌNH -->
+<section class="stage" id="ve-minh">
+  <p class="tag">Về mình</p>
+  <div class="about">
+    <img src="../anh/alex.avif" alt="Ảnh chân dung Alex Hayes" width="208" height="208" loading="lazy">
+    <div>
+      <p class="name">Alex Hayes</p>
+      <p>Mình đang trên hành trình <b>10.000 giờ</b> học AI và xây dựng doanh nghiệp về AI, bắt đầu từ con số 0 và làm công khai. Video này là một buổi hướng dẫn thật cho một người bạn mới bắt đầu.</p>
+      <p class="meta">Chắc chắn còn chỗ sơ suất. Bạn góp ý ở phần bình luận trên YouTube nhé.</p>
+    </div>
+  </div>
+  <div class="btns"><a class="btn" href="https://www.youtube.com/@Vannam_alexhayes" target="_blank" rel="noopener">Đăng ký kênh YouTube</a><a class="btn ghost" href="../">Xem trang của mình</a></div>
+  <footer>© Alex Hayes · Nhật ký 10.000 h · Cập nhật 23/11/2026</footer>
+</section>
+
+</main>
+<div class="toast" id="toast" role="status" aria-live="polite">Đã chép</div>
+
+<script>
+(function(){
+  // Khi video đã lên YouTube: điền mã video vào đây (phần sau "v=" trong đường dẫn), mốc phút sẽ thành link.
+  var VIDEO_ID='';
+
+  var toast=document.getElementById('toast'), tt;
+  function say(m){toast.textContent=m;toast.classList.add('show');clearTimeout(tt);tt=setTimeout(function(){toast.classList.remove('show')},1600)}
+  function copyText(t,btn){
+    function ok(){say('Đã chép');if(btn){var o=btn.textContent;btn.textContent='Đã chép';btn.classList.add('done');setTimeout(function(){btn.textContent=o;btn.classList.remove('done')},1500)}}
+    function fb(){var a=document.createElement('textarea');a.value=t;a.style.position='fixed';a.style.opacity='0';document.body.appendChild(a);a.select();try{document.execCommand('copy');ok()}catch(e){say('Không chép được, bạn bôi đen rồi chép tay nhé')}a.remove()}
+    if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(t).then(ok,fb)}else fb();
+  }
+  document.addEventListener('click',function(e){
+    var b=e.target.closest('[data-copy],[data-dl]'); if(!b) return;
+    var t=b.closest('.pr').querySelector('pre').innerText.trim();
+    if(b.hasAttribute('data-dl')){
+      var blob=new Blob([t+'\n'],{type:'text/markdown;charset=utf-8'}), a=document.createElement('a');
+      a.href=URL.createObjectURL(blob); a.download=b.getAttribute('data-dl'); document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(function(){URL.revokeObjectURL(a.href)},1000); say('Đã tải '+b.getAttribute('data-dl')); return;
+    }
+    copyText(t,b);
+  });
+
+  // Mốc phút
+  document.querySelectorAll('a.t[data-t]').forEach(function(a){
+    if(VIDEO_ID){a.href='https://youtu.be/'+VIDEO_ID+'?t='+a.getAttribute('data-t');a.target='_blank';a.rel='noopener';a.title='Mở video ở phút này'}
+    else{a.removeAttribute('href');a.title='Link sẽ có khi video lên YouTube'}
+  });
+  if(VIDEO_ID){
+    document.getElementById('xem-video').href='https://youtu.be/'+VIDEO_ID;
+    var fr=document.createElement('iframe');
+    fr.src='https://www.youtube-nocookie.com/embed/'+VIDEO_ID; fr.title='Video 03: Claude Code cho người mới, từ cài đặt tới lúc AI tự dựng xong video';
+    fr.allow='accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen'; fr.allowFullscreen=true; fr.loading='lazy';
+    var pl=document.getElementById('player-link'); pl.parentNode.replaceChild(fr,pl);
+    document.getElementById('player-cap').textContent='Xem video ở trên. Mốc ▶ phút ở mỗi chặng mở video đúng đoạn đó trong thẻ mới, để bạn không mất chỗ đang đọc.';
+  }
+
+  // Form F01: ghép câu lệnh viết CLAUDE.md
+  document.getElementById('f01-go').addEventListener('click',function(){
+    var lines=[];
+    document.querySelectorAll('#f01 [data-k]').forEach(function(el){var v=el.value.trim();if(v)lines.push('- '+el.getAttribute('data-k')+': '+v)});
+    var out=document.getElementById('f01-out');
+    if(!lines.length){say('Bạn điền ít nhất một ô nhé');return}
+    out.querySelector('pre').textContent='Dựa vào thông tin dưới đây, viết giúp mình file CLAUDE.md, dưới 50 dòng, chia ba phần: Về tôi, Việc tôi đang làm, Quy tắc làm việc. Chỉ ghi những điều bạn không tự đoán được. Chỗ nào chưa rõ thì hỏi lại mình trước khi viết.\n\n'+lines.join('\n');
+    out.hidden=false; out.scrollIntoView({block:'nearest'});
+  });
+
+  // Form F02: câu lệnh tạo skill dựng video
+  var f2=document.querySelectorAll('#f02 [data-k]'), o2=document.getElementById('f02-out');
+  function build2(){
+    var v={}; f2.forEach(function(el){v[el.getAttribute('data-k')]=el.value.trim()});
+    if(!v.mau&&!v.loai&&!v.clip&&!v.thich){o2.textContent='Điền các ô ở trên…';return}
+    var p=['Mình muốn làm '+(v.loai||'[loại video]')+'. Video mẫu mình thích ở: '+(v.mau||'[video mẫu]')+'.'];
+    p.push('Hãy xem kỹ video mẫu và phân tích khung: mở đầu, phần giữa, kết, chữ trên hình, nhịp cắt, độ dài.');
+    if(v.thich) p.push('Điều mình thích ở mẫu: '+v.thich+'.');
+    p.push('Sau đó tạo thành skill dựng video ngắn cho mình theo đúng khung đó. Đoạn quay của mình nằm ở: '+(v.clip||'[thư mục đoạn quay]')+'.');
+    p.push('Trình bày phần phân tích và các bước của skill cho mình duyệt trước khi lưu.');
+    o2.textContent=p.join(' ');
+  }
+  f2.forEach(function(el){el.addEventListener('input',build2)});
+
+  // Bài tập: nhớ trên trình duyệt người xem
+  var KEY='ah-video03-baitap-v1', st={};
+  try{st=JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){st={}}
+  var boxes=document.querySelectorAll('[data-ex-box]'), prog=document.getElementById('prog'), tocLinks=document.querySelectorAll('#toc a');
+  function paint(){
+    var n=0;
+    boxes.forEach(function(b){var id=b.getAttribute('data-ex-box');b.checked=!!st[id];if(st[id])n++;
+      var sec=document.querySelector('[data-ex="'+id+'"]'); if(sec) sec.classList.toggle('done',!!st[id]);
+      var l=tocLinks[id-1]; if(l){var s=l.querySelector('small'); if(s&&!s.dataset.o)s.dataset.o=s.textContent; if(s)s.innerHTML=st[id]?'<span class="tick">✓ đã làm</span>':s.dataset.o}
+    });
+    prog.textContent='Bài tập: '+n+'/'+boxes.length;
+  }
+  boxes.forEach(function(b){b.addEventListener('change',function(){st[b.getAttribute('data-ex-box')]=b.checked;try{localStorage.setItem(KEY,JSON.stringify(st))}catch(e){}paint()})});
+  paint();
+
+  // Hình động: mỗi .anim chạy từng bước s1, s2… khớp với dòng chú thích
+  var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function setCaps(a,i){a.querySelectorAll('.caps li').forEach(function(li,k){li.classList.toggle('on',k===i-1);li.classList.toggle('past',k<i-1)})}
+  function clear(a){clearTimeout(a._t);a.classList.add('reset');for(var k=1;k<=9;k++)a.classList.remove('s'+k);setCaps(a,0);void a.offsetWidth;a.classList.remove('reset')}
+  function run(a){
+    var n=+a.getAttribute('data-anim'); clear(a);
+    if(reduce){for(var k=1;k<=n;k++)a.classList.add('s'+k);a.querySelectorAll('.caps li').forEach(function(li){li.classList.add('on')});return}
+    var i=0;(function step(){i++;a.classList.add('s'+i);setCaps(a,i);if(i<n)a._t=setTimeout(step,2000)})();
+  }
+  var anims=document.querySelectorAll('.anim');
+  anims.forEach(function(a){a.querySelector('.replay').addEventListener('click',function(){run(a)})});
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(es){es.forEach(function(x){if(x.isIntersecting){run(x.target);io.unobserve(x.target)}})},{threshold:.5});
+    anims.forEach(function(a){io.observe(a)});
+  } else anims.forEach(run);
+})();
+</script>
+</body>
+</html>
