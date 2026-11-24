@@ -3,6 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0d0e11">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230d0e11'/%3E%3Ctext x='16' y='23' font-family='Georgia' font-size='20' text-anchor='middle' fill='%23c9a96a'%3EA%3C/text%3E%3C/svg%3E">
 <title>Claude Code cho người mới: làm sạch Excel 10.000 dòng, làm web báo cáo, tự động hóa · Alex Hayes</title>
 <meta name="description" content="Tài liệu đi kèm video 01 của Alex Hayes: để Claude Code nhớ bạn, làm sạch file Excel 10.000 dòng, đóng gói thành skill, làm trang báo cáo và cho nó tự chạy mỗi ngày. Có kiến thức kèm nguồn, mẫu để chép và bài tập tự làm.">
 <style>
@@ -15,24 +17,33 @@
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);font-weight:300;font-size:1.0625rem;line-height:1.75;overflow-x:hidden;
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);font-weight:400;font-size:1.0625rem;line-height:1.75;overflow-x:hidden;
   background-image:radial-gradient(ellipse at 90% -5%,rgba(201,169,106,.10),transparent 45%)}
 a{color:var(--gold-hi)}
 .top{display:flex;justify-content:space-between;align-items:center;max-width:60rem;margin:0 auto;padding:1rem 1.25rem;font-size:.85rem;letter-spacing:.08em}
-.top a{text-decoration:none;color:var(--muted)} .top a:hover{color:var(--gold-hi)}
+.top a{text-decoration:none;color:var(--muted);display:inline-block;padding:.45rem 0} .top a:hover{color:var(--gold-hi)}
 .top .prog{color:var(--gold);white-space:nowrap}
 .wrap{max-width:60rem;margin:0 auto;padding:0 1rem 3rem 3rem;position:relative}
 .wrap::before{content:"";position:absolute;left:1.35rem;top:0;bottom:0;width:1px;background:linear-gradient(to bottom,transparent,var(--gold) 4%,var(--gold) 96%,transparent);opacity:.4}
 .stage{position:relative;padding:3.2rem 0 1rem}
 .stage::before{content:"";position:absolute;left:-1.95rem;top:3.75rem;width:.6rem;height:.6rem;border-radius:50%;background:var(--gold);box-shadow:0 0 0 5px var(--bg),0 0 0 6px var(--line)}
 .stage.done::before{background:var(--ok)}
-.tag{font-size:.74rem;font-weight:500;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin:0 0 1rem}
+.tag{font-size:.875rem;font-weight:500;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin:0 0 1rem}
 .tag .min{color:var(--muted);letter-spacing:.12em}
 h1,h2{font-family:var(--serif);font-weight:400;line-height:1.14;margin:0 0 1.2rem;text-wrap:balance;overflow-wrap:break-word}
 h1{font-size:clamp(2rem,8vw,3.6rem)}
 h2{font-size:clamp(1.7rem,6.4vw,2.6rem)}
 h1 em,h2 em{font-style:italic;color:var(--gold-hi)}
 h3{font-family:var(--serif);font-weight:400;font-size:1.3rem;margin:2rem 0 .7rem;color:var(--text)}
+h2.h3{font-family:var(--serif);font-weight:400;font-size:1.3rem;line-height:1.3;letter-spacing:0;margin:2rem 0 .7rem;color:var(--text)}
+.skip{position:absolute;left:1rem;top:-4rem;z-index:60;background:var(--gold);color:#17130a;font-weight:600;padding:.6rem 1rem;text-decoration:none}
+.skip:focus{top:.8rem}
+.toc-in{margin:1.4rem 0;border:1px solid var(--line);max-width:40rem}
+.toc-in summary{cursor:pointer;padding:.8rem 1rem;color:var(--gold-hi);font-size:.95rem;letter-spacing:.04em}
+.toc-in ol{margin:0;padding:.2rem 1rem 1rem;list-style:none}
+.toc-in li{padding:.25rem 0}
+.toc-in a{color:var(--text);text-decoration:none;display:inline-block;padding:.2rem 0}
+.toc-in a:hover{color:var(--gold-hi)}
 p{margin:0 0 1.1rem;max-width:40rem;color:#d9d5cb}
 .lead{font-size:1.15rem;color:var(--text)}
 .meta{color:var(--muted);font-size:.92rem;letter-spacing:.04em}
@@ -55,19 +66,19 @@ p{margin:0 0 1.1rem;max-width:40rem;color:#d9d5cb}
 .toc .tick{color:var(--ok)}
 /* khối kiến thức */
 .kn{background:var(--panel);border:1px solid var(--line-soft);border-left:2px solid var(--gold);padding:1.2rem 1.3rem;margin:1.4rem 0;max-width:42rem}
-.kn .h,.ex .h,.err .h{display:block;font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin-bottom:.6rem}
+.kn .h,.ex .h,.err .h{display:block;font-size:.78rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin-bottom:.6rem}
 .kn ul{margin:0;padding-left:1.1rem} .kn li{margin:.35rem 0;color:#d9d5cb}
-.src{font-size:.85rem;color:var(--muted);margin:.8rem 0 0;border-top:1px solid var(--line-soft);padding-top:.6rem}
-.lv{display:inline-block;font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;padding:.1rem .5rem;border-radius:2px;margin-right:.4rem;vertical-align:1px}
+.src{font-size:.9rem;max-width:44em;color:var(--muted);margin:.8rem 0 0;border-top:1px solid var(--line-soft);padding-top:.6rem}
+.lv{display:inline-block;font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;padding:.1rem .5rem;border-radius:2px;margin-right:.4rem;vertical-align:1px}
 .lv.ok{color:#0d0e11;background:var(--ok)}
 .lv.no{color:var(--gold-hi);border:1px dashed var(--gold)}
 /* mẫu để chép */
 .pr{border:1px solid var(--line-soft);background:var(--panel2);margin:1.2rem 0;max-width:42rem}
-.pr header{display:flex;align-items:center;gap:.8rem;padding:.6rem .9rem;border-bottom:1px solid var(--line-soft);font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.pr header{display:flex;align-items:center;gap:.8rem;padding:.6rem .9rem;border-bottom:1px solid var(--line-soft);font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
 .pr header b{color:var(--gold);font-weight:500}
 .pr header span{flex:1;min-width:0}
 .pr pre{margin:0;padding:1rem;white-space:pre-wrap;word-break:break-word;font-family:var(--mono);font-size:.9rem;line-height:1.6;color:var(--text)}
-.copy{flex:none;font:inherit;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:#17130a;background:var(--gold);border:0;border-radius:2px;padding:.35rem .8rem;cursor:pointer}
+.copy{flex:none;font:inherit;font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;color:#17130a;background:var(--gold);border:0;border-radius:2px;padding:.35rem .8rem;cursor:pointer}
 .copy.ghost{background:transparent;color:var(--gold-hi);border:1px solid var(--line)}
 .copy.done{background:var(--ok)}
 .hl{color:var(--gold-hi);background:rgba(201,169,106,.14);padding:0 .15rem}
@@ -76,7 +87,7 @@ p{margin:0 0 1.1rem;max-width:40rem;color:#d9d5cb}
 .ex ol{margin:.3rem 0 .8rem;padding-left:1.2rem} .ex li{margin:.3rem 0;color:#d9d5cb}
 .ex .xong{font-size:.95rem;color:var(--muted);margin:0 0 .9rem}
 .ex .xong b{color:var(--gold-hi);font-weight:400}
-.ex .lvl{display:inline-block;font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-hi);border:1px solid var(--line);border-radius:99px;padding:.05rem .6rem;margin:0 0 .7rem}
+.ex .lvl{display:inline-block;font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-hi);border:1px solid var(--line);border-radius:99px;padding:.05rem .6rem;margin:0 0 .7rem}
 .ex details{margin:.2rem 0 1rem;font-size:.95rem;color:var(--muted)}
 .ex summary{cursor:pointer;color:var(--gold-hi)}
 .levels{list-style:none;padding:0;margin:.8rem 0 0;font-size:.95rem}
@@ -85,8 +96,8 @@ p{margin:0 0 1.1rem;max-width:40rem;color:#d9d5cb}
 .check input{width:1.15rem;height:1.15rem;accent-color:var(--ok)}
 /* hình động minh hoạ */
 .anim{border:1px solid var(--line-soft);background:var(--panel);margin:1.6rem 0;max-width:42rem;padding:.9rem .9rem .8rem}
-.anim .ah{display:flex;justify-content:space-between;align-items:center;gap:.6rem;font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:.7rem}
-.replay{flex:none;font:inherit;font-size:.75rem;letter-spacing:.06em;text-transform:none;color:var(--gold-hi);background:transparent;border:1px solid var(--line);border-radius:2px;padding:.2rem .7rem;cursor:pointer}
+.anim .ah{display:flex;justify-content:space-between;align-items:center;gap:.6rem;font-size:.78rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:.7rem}
+.replay{flex:none;font:inherit;font-size:.8rem;letter-spacing:.06em;text-transform:none;color:var(--gold-hi);background:transparent;border:1px solid var(--line);border-radius:2px;padding:.2rem .7rem;cursor:pointer}
 .sb{position:relative;height:240px;overflow:hidden;border-radius:2px;background:#101216;border:1px solid var(--line-soft);font-size:.85rem;line-height:1.45}
 .sb *{transition:opacity .6s ease,transform .7s ease,left 1s ease,top 1s ease,background-color .4s,border-color .4s,color .4s,box-shadow .4s}
 .anim.reset .sb *{transition:none!important}
@@ -215,12 +226,13 @@ a.t:hover{color:var(--gold-hi)}
 .player figcaption{font-size:.85rem;color:var(--muted);margin-top:.5rem}
 .cmp{width:100%;max-width:42rem;border-collapse:collapse;margin:1.2rem 0;font-size:.95rem}
 .cmp th,.cmp td{text-align:left;vertical-align:top;padding:.6rem .5rem;border-bottom:1px solid var(--line-soft);color:#d9d5cb}
-.cmp th{font-weight:400;color:var(--gold);font-size:.74rem;letter-spacing:.14em;text-transform:uppercase}
+.cmp th{font-weight:400;color:var(--gold);font-size:.8rem;letter-spacing:.14em;text-transform:uppercase}
 .cmp td:first-child{color:var(--muted);width:30%}
 @media (min-width:40rem){.about{grid-template-columns:auto 1fr}}
 </style>
 </head>
 <body>
+<a class="skip" href="#chang-0">Bỏ qua, tới nội dung</a>
 
 <nav class="top">
   <a href="../">← Alex Hayes</a>
@@ -259,7 +271,7 @@ a.t:hover{color:var(--gold-hi)}
     <p class="meta" style="margin-top:.6rem">Vì sao chia mức: lúc đầu có mẫu để bạn không bị bí; sau đó bớt dần để bạn tự làm được, kể cả khi không còn trang này. Làm xong bài nào thì tích vào ô của bài đó, trình duyệt của bạn sẽ nhớ.</p>
   </div>
 
-  <h3>Chuẩn bị (làm một lần)</h3>
+  <h2 class="h3">Chuẩn bị (làm một lần)</h2>
   <ol class="steps">
     <li>Tải app Claude cho máy tính ở <a href="https://claude.com/download" target="_blank" rel="noopener">claude.com/download</a> rồi đăng nhập.</li>
     <li>Cần <b>gói Pro</b> trở lên để dùng Claude Code (xem chặng 2).</li>
@@ -279,7 +291,7 @@ a.t:hover{color:var(--gold-hi)}
     </ul>
   </details>
 
-  <h3>Trước khi bắt đầu</h3>
+  <h2 class="h3">Trước khi bắt đầu</h2>
   <p>Một điều mình rút ra: <b>bạn càng giỏi nghề của mình, Claude Code càng giúp bạn được nhiều</b>, vì bạn biết phải đòi kết quả gì và nhìn ra chỗ nào sai. Nếu chưa rành một việc, bạn có thể dùng các skill người khác đã làm sẵn trên GitHub. Phần đó mình để cho video sau.</p>
   <p class="meta">Mình cũng đang học, đây là video đầu tiên của mình. Chỗ nào ghi <span class="lv no">Chưa xác minh</span> là mình chưa tự kiểm được, bạn thử thì nhớ cẩn thận hơn. Chỗ ghi <span class="lv ok">Đã kiểm chứng</span> có link tới tài liệu chính thức.</p>
 
@@ -839,6 +851,15 @@ description: [Skill này làm gì]. Dùng khi [người dùng nói gì / đưa f
     var io=new IntersectionObserver(function(es){es.forEach(function(x){if(x.isIntersecting){run(x.target);io.unobserve(x.target)}})},{threshold:.5});
     anims.forEach(function(a){io.observe(a)});
   } else anims.forEach(run);
+})();
+</script>
+<script>
+(function(){ // mục lục gập: lấy tên từ nhãn "Chặng ..." của từng phần, không viết chữ mới
+  var fig=document.querySelector("#chang-0 figure"); if(!fig) return;
+  var d=document.createElement("details"); d.className="toc-in"; var s=document.createElement("summary"); var ol=document.createElement("ol");
+  document.querySelectorAll("section.stage[id^=chang-]").forEach(function(sec){ if(sec.id==="chang-0") return; var t=sec.querySelector(".tag"); if(!t) return;
+    var name=(t.firstChild&&t.firstChild.nodeType===3?t.firstChild.textContent:t.textContent).trim(); var li=document.createElement("li"), a=document.createElement("a"); a.href="#"+sec.id; a.textContent=name; li.appendChild(a); ol.appendChild(li); });
+  s.textContent="Mục lục · "+ol.children.length+" chặng"; d.appendChild(s); d.appendChild(ol); fig.parentNode.insertBefore(d, fig.nextSibling);
 })();
 </script>
 </body>
